@@ -14,12 +14,19 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-
+  userName:any;
+  password:any;
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+    this.password="";
+    this.userName="";
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
+  }
+  
+  singIn(){
+
   }
 
 }
