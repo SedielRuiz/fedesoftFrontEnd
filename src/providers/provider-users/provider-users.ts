@@ -1,7 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { IonicPage } from 'ionic-angular';
 import { HttpClientModule } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import { map } from "rxjs/operators";
+import { HttpHeaders } from '@angular/common/http';
+import { PrincipalPage } from '../../pages/principal/principal';
 
+export class Group {
+  id: number;
+  name: string;
+  fragment: string;
+  image: string;
+  constructor(values: Object = {}) {
+       Object.assign(this, values);
+  }
+}
 /*
   Generated class for the ProviderUsersProvider provider.
 
@@ -11,32 +25,38 @@ import { HttpClientModule } from '@angular/common/http';
 @Injectable()
 export class ProviderUsersProvider {
   data
+  baseUrl:string="http://127.0.0.1:3000";
   constructor(public http: HttpClient) {
-    console.log('Hello ProviderUsersProvider Provider');
     this.data;
   }
   getUsers(){
-    return this.http.get('localhost:3000/users');
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+      
+    let apiUrl=localStorage.getItem("apiUrl");
+    return this.http.get(this.baseUrl+'/users',options);
+  }
+  tokenUser(json){
+    let headers = new HttpHeaders(
+      {
+        'Content-Type': 'application/json'
+      });
+      const options = { headers: headers };
+      let jsonA = JSON.stringify(json);
+      return this.http.post(this.baseUrl+'/user_token', jsonA, options)
   }
   postUser(json){
-    let url ="localhost:3000/users";
-    // let postData = new FormData();
-    // postData.append("name", json.name);
-    // postData.append("last_name", json.last_name);
-    // postData.append("phone", json.phone);
-    // postData.append("address", json.address);
-    // postData.append("user_name", json.user_name);
-    // postData.append("email", json.email);
-    // postData.append("password", json.password);
-    // postData.append("password_confirmation", json.password_confirmation);
-    
-    console.log(url);
-    console.log(json);
-    this.http.post(url, json)
-    .subscribe(
-      (data)=>{this.data = data;},
-      (error)=>{console.log(error);}
-    );
-    return this.data;
+    let headers = new HttpHeaders(
+    {
+      'Content-Type': 'application/json'
+    });
+    const options = { headers: headers };
+    let jsonA = JSON.stringify(json);
+    return this.http.post(this.baseUrl+'/users', jsonA, options)
   }
 }

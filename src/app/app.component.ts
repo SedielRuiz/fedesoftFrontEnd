@@ -5,6 +5,8 @@ import { Platform, MenuController, Nav } from 'ionic-angular';
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ListPage } from '../pages/list/list';
 import { RegisterPage } from '../pages/register/register';
+import { LoginPage } from '../pages/login/login';
+import { PrincipalPage } from '../pages/principal/principal';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -26,11 +28,13 @@ export class MyApp {
     public statusBar: StatusBar,
     public splashScreen: SplashScreen
   ) {
+    localStorage.setItem("apiUrl","http://localhost:3000/")
     this.initializeApp();
 
     // set our app's pages
     this.pages = [
       { title: 'Inicio', component: HelloIonicPage },
+      { title: 'Login', component: LoginPage },
       { title: 'Registrate', component: RegisterPage }
     ];
   }
@@ -43,11 +47,18 @@ export class MyApp {
       this.splashScreen.hide();
     });
   }
-
   openPage(page) {
     // close the menu when clicking a link from the menu
     this.menu.close();
     // navigate to the new page if it is not the current page
     this.nav.setRoot(page.component);
+  }
+  logOut(){
+    localStorage.removeItem("user")
+    localStorage.removeItem("jwt")
+    this.nav.setRoot(LoginPage)
+  }
+  public isThereASession():boolean{
+    return localStorage.getItem("jwt")!= undefined;
   }
 }

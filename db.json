@@ -1,0 +1,24 @@
+{
+    "users": [
+        {
+            "name":"dfgfsdg",
+            "last_name":"fgdfg",
+            "phone":656,
+            "address":"Calle 51 D",
+            "user_name":"dfghdfgh",
+            "email":"ssrp@gmail.com",
+            "password":"admin123",
+             "password_confirmation": "admin123"
+        },
+        {
+            "name":"juandi",
+            "last_name":"fgdfg",
+            "phone":656,
+            "address":"Calle 51 D",
+            "user_name":"dfghdfgh",
+            "email":"ssrp@gmail.com",
+            "password":"admin123",
+             "password_confirmation": "admin123"
+        }
+    ]
+}
