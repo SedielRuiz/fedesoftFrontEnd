@@ -1,33 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IonicPage } from 'ionic-angular';
 import { HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { map } from "rxjs/operators";
 import { HttpHeaders } from '@angular/common/http';
-import { PrincipalPage } from '../../pages/principal/principal';
 
-export class Group {
-  id: number;
-  name: string;
-  fragment: string;
-  image: string;
-  constructor(values: Object = {}) {
-       Object.assign(this, values);
-  }
-}
 /*
-  Generated class for the ProviderUsersProvider provider.
+  Generated class for the MethodsPreventionsProvider provider.
 
   See https://angular.io/guide/dependency-injection for more info on providers
   and Angular DI.
 */
 @Injectable()
-export class ProviderUsersProvider {
+export class MethodsPreventionsProvider {
   baseUrl:string="http://127.0.0.1:3000";
   constructor(public http: HttpClient) {
+    console.log('Hello MethodsPreventionsProvider Provider');
   }
-  getUsers(id){
+  getMethodsPreventions(){
     let jwt=localStorage.getItem("jwt");
     let headers = new HttpHeaders(
     {
@@ -37,33 +27,24 @@ export class ProviderUsersProvider {
     const options = { headers: headers };
       
     let apiUrl=localStorage.getItem("apiUrl");
-    return this.http.get(this.baseUrl+'/users/'+id,options);
+    return this.http.get(this.baseUrl+'/methods_preventions/',options);
   }
-  tokenUser(json){
-    let headers = new HttpHeaders(
-      {
-        'Content-Type': 'application/json'
-      });
-      const options = { headers: headers };
-      let jsonA = JSON.stringify(json);
-      return this.http.post(this.baseUrl+'/user_token', jsonA, options)
-  }
-  postUser(json){
+  postMethodPrevention(json){
     let headers = new HttpHeaders(
     {
       'Content-Type': 'application/json'
     });
     const options = { headers: headers };
     let jsonA = JSON.stringify(json);
-    return this.http.post(this.baseUrl+'/users', jsonA, options)
+    return this.http.post(this.baseUrl+'/methods_preventions', jsonA, options)
   }
-  putUser(json){
+  putMethodPrevention(json){
     let headers = new HttpHeaders(
       {
         'Content-Type': 'application/json'
       });
       const options = { headers: headers };
       let jsonA = JSON.stringify(json);
-      return this.http.put(this.baseUrl+'/users', jsonA, options)
+      return this.http.put(this.baseUrl+'/methods_preventions', jsonA, options)
   }
 }

@@ -15,6 +15,16 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { LocationsProvider } from '../providers/locations/locations';
+import { NeighborhoodsProvider } from '../providers/neighborhoods/neighborhoods';
+import { RisksProvider } from '../providers/risks/risks';
+import { MethodsPreventionsProvider } from '../providers/methods-preventions/methods-preventions';
+import { PollsProvider } from '../providers/polls/polls';
+import { QuestionsProvider } from '../providers/questions/questions';
+import { OptionsQuestionsProvider } from '../providers/options-questions/options-questions';
+import { RatingsProvider } from '../providers/ratings/ratings';
+import { ResultSurveysProvider } from '../providers/result-surveys/result-surveys';
+import { ApplySurveysProvider } from '../providers/apply-surveys/apply-surveys';
 
 @NgModule({
   declarations: [
@@ -45,7 +55,17 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    ProviderUsersProvider
+    ProviderUsersProvider,
+    LocationsProvider,
+    NeighborhoodsProvider,
+    RisksProvider,
+    MethodsPreventionsProvider,
+    PollsProvider,
+    QuestionsProvider,
+    OptionsQuestionsProvider,
+    RatingsProvider,
+    ResultSurveysProvider,
+    ApplySurveysProvider
   ]
 })
 export class AppModule {}
