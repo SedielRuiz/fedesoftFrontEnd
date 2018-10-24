@@ -26,6 +26,7 @@ import { RatingsProvider } from '../providers/ratings/ratings';
 import { ResultSurveysProvider } from '../providers/result-surveys/result-surveys';
 import { ApplySurveysProvider } from '../providers/apply-surveys/apply-surveys';
 import { ForumsProvider } from '../providers/forums/forums';
+import { CommentsForumsProvider } from '../providers/comments-forums/comments-forums';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { ForumsProvider } from '../providers/forums/forums';
     RatingsProvider,
     ResultSurveysProvider,
     ApplySurveysProvider,
-    ForumsProvider
+    ForumsProvider,
+    CommentsForumsProvider
   ]
 })
 export class AppModule {}
