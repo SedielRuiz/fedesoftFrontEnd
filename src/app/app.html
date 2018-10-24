@@ -7,6 +7,9 @@
   </ion-header>
 
   <ion-content>
+    <button ion-item  *ngIf="isThereASession()" (click)="logOut()">
+        Cerrar Sesion
+    </button>
     <ion-list>
       <button ion-item *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}

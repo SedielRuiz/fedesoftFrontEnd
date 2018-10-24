@@ -9,8 +9,10 @@ import { ListPage } from '../pages/list/list';
 /*Inicio componenete*/
 import { RegisterPage } from '../pages/register/register';
 import { LoginPage } from '../pages/login/login';
+import { PrincipalPage } from '../pages/principal/principal';
 import { ProviderUsersProvider } from '../providers/provider-users/provider-users';
 import { HttpClientModule } from '@angular/common/http';
+import { TestPage } from '../pages/test/test';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -22,7 +24,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ItemDetailsPage,
     ListPage,
     RegisterPage,
-    LoginPage
+    LoginPage,
+    PrincipalPage,
+    TestPage
   ],
   imports: [
     BrowserModule,
@@ -36,7 +40,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ItemDetailsPage,
     ListPage,
     RegisterPage,
-    LoginPage
+    LoginPage,
+    PrincipalPage,
+    TestPage
   ],
   providers: [
     StatusBar,
