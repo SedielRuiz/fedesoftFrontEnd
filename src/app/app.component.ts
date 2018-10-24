@@ -36,6 +36,7 @@ export class MyApp {
       { title: 'Inicio', component: HelloIonicPage },
       { title: 'Login', component: LoginPage },
       { title: 'Registrate', component: RegisterPage },
+      { title: 'Actualizar información', component: RegisterPage },
       { title: 'Principal', component: PrincipalPage }
     ];
   }

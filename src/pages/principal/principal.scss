@@ -1,3 +1,43 @@
-page-principal {
-
+.imgLearning {
+    width: 170px;
+    height: 200px;
+    border-radius: 5px; 
 }
+.boxes {
+    box-shadow: 8px 8px 8px #aaa; 
+    border-radius: 12px;  
+    background-color:#ddd;
+    width:32%;
+    padding:8px;
+    text-align: center;
+    box-sizing: border-box;
+} 
+hr {
+    height: 2px;
+    border: 0;
+    background-color: #AEDEAC !important;
+}
+.botones {
+    background-color: #AEDEAC;
+}
+#learning{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center
+}
+
+//Responsive
+@media screen and ( max-width : 800px ) {
+    .item1{
+        width:100%;
+        display: block;
+    }
+    .item2{
+      width:100%;
+      display: block;
+    }
+    .item3{
+      width:100%;
+      display: block;
+    }
+  }
