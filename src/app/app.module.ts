@@ -25,6 +25,7 @@ import { OptionsQuestionsProvider } from '../providers/options-questions/options
 import { RatingsProvider } from '../providers/ratings/ratings';
 import { ResultSurveysProvider } from '../providers/result-surveys/result-surveys';
 import { ApplySurveysProvider } from '../providers/apply-surveys/apply-surveys';
+import { ForumsProvider } from '../providers/forums/forums';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { ApplySurveysProvider } from '../providers/apply-surveys/apply-surveys';
     OptionsQuestionsProvider,
     RatingsProvider,
     ResultSurveysProvider,
-    ApplySurveysProvider
+    ApplySurveysProvider,
+    ForumsProvider
   ]
 })
 export class AppModule {}
