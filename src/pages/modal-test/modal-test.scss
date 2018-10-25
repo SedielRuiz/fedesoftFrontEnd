@@ -3,14 +3,34 @@
 }
 #btndismiss{
     background: #920E0E;
-    border-radius: 3px;
-    float: left;
-    width: 65px;
-    height: 30px;
+    border-radius: 369px;
+    float: right;
+    width: 30px;
+    height: 20px;
 }
-hr {
-    height: 5px;
-    min-width:100%;
-    border: 0;
-    background-color: #AEDEAC !important;
+h1{
+    text-align: center;
+}
+#hola{
+    color: #4D9368;
+}
+#linequestion{
+    border: 3px !important;
+    height: 3px !important;
+}
+#messageQuestion{
+    border-radius: 12px;
+    border: 2px solid;
+    border-color: #B2B2B2 !important;
+    width: 100%;
+    margin: 83px auto;
+    padding: 5px;
+}
+#ptext{
+    font-size: 12px;
+}
+#chipcountuner{
+    color: #4D9368 !important;
+    float: right;
+    font-size: 16px;
 }

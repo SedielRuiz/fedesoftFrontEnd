@@ -24,15 +24,20 @@
     text-align: center;
     box-sizing: border-box;
 } 
+.buttons {
+    background-color: #4D9368;
+    
+}
+.buttons:hover{
+    background-color: #AEDEAC;
+}
 hr {
     height: 2px;
     min-width:100%;
     border: 0;
     background-color: #AEDEAC !important;
 }
-.botones {
-    background-color: #AEDEAC;
-}
+
 #learning{
     display: block;
     justify-content: space-evenly;

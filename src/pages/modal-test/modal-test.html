@@ -7,21 +7,21 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Test de Probabilidad de Embarazo</ion-title>
+    <ion-title>Test</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding>
     <ion-buttons end>
-      <button id="btndismiss" (click)="dismiss()" >Cancelar</button>
+      <button id="btndismiss" (click)="dismiss()" >X</button>
     </ion-buttons>
-    <hr><br>
+    <br> <br>
     <div class="formTest">
         <section class="sectionQuestion"> 
             <h1>aqui irá la pregunta</h1>
         </section>
-        <hr> <br>
+        <hr id="linequestion"> <br>
         <ion-list radio-group [(ngModel)]="relationship">
             <ion-item>
                 <ion-label>opcion1</ion-label>
@@ -35,7 +35,33 @@
                 <ion-label>option3</ion-label>
                 <ion-radio value="option3" checked></ion-radio>
             </ion-item>
+            <ion-item>
+                <ion-label>opcion4</ion-label>
+                <ion-radio value="option1" checked></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>option5</ion-label>
+                <ion-radio value="option2" checked></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>option6</ion-label>
+                <ion-radio value="option3" checked></ion-radio>
+            </ion-item>
         </ion-list>
+        <div id="sectionArrows" >
+            <h1 >
+                <ion-icon id="hola" name="ios-arrow-dropleft-outline"></ion-icon> &nbsp;
+                <ion-icon id="hola" name="ios-arrow-dropright-outline"></ion-icon>
+            </h1> 
+        </div>
+        <div id="counter" >
+            <ion-chip id="chipcountuner">
+                <ion-label>este es el contador</ion-label>
+            </ion-chip>
+        </div>    
+        <div id="messageQuestion">
+          <p id="ptext">Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s</p>
+        </div>
     </div>
       
 </ion-content>
