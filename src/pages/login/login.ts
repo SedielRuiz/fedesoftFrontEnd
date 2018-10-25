@@ -68,7 +68,7 @@ export class LoginPage {
     this.alertCtrl.create({
         title: "Oppps",
         subTitle: errors[err.status],
-        buttons: ['Dismiss']
+        buttons: ['No tenemos registro de tus datos, registrate ya!']
     }).present();
   }
 

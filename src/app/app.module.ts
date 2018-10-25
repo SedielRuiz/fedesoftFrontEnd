@@ -7,10 +7,10 @@ import { MyApp } from './app.component';
 /*************************************COMPONENTES**************************/
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ItemDetailsPage } from '../pages/item-details/item-details';
+import { LoginPage } from '../pages/login/login';
 import { ListPage } from '../pages/list/list';
 
 import { RegisterPage } from '../pages/register/register';
-import { LoginPage } from '../pages/login/login';
 import { PrincipalPage } from '../pages/principal/principal';
 import { ProviderUsersProvider } from '../providers/provider-users/provider-users';
 import { HttpClientModule } from '@angular/common/http';
