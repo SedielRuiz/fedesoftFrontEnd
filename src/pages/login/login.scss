@@ -1,3 +1,28 @@
-page-login {
-
+.btnLogin{
+    width: 100%;
+    color: black
+}
+#formLogin{
+    float: center;
+    margin: 15px auto;
+    margin-bottom: 14px;
+    margin-top: 16em;
+}
+.inpL{
+    color: white;
+}
+.iconL{
+    margin-top: 38px !important;
+    color: white;
+}
+.containerLog{
+    background: url(../assets/imgs/loginF.jpg) no-repeat;
+    width: 100%;
+    height: 5500px;
+}
+.lblL{
+    color: white;
+}
+.boxs{
+    background: none;
 }

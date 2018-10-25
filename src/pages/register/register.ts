@@ -30,7 +30,9 @@ export class RegisterPage {
   password:any;
   passwordConfirm:any;
   neighborhoodId:any;
+  rlb:any;
   constructor(public navCtrl: NavController, public alertCtrl: AlertController, public provider:ProviderUsersProvider) {
+    this.rlb="";
     this.person={};
     this.name="";
     this.lastName="";
@@ -64,7 +66,10 @@ export class RegisterPage {
         this.navCtrl.setRoot(LoginPage);
       },
       (error)=>{console.log(error);}
-    );;
+    );
+  }
+  goBack() {
+    this.navCtrl.pop();
   }
   alerts(){
     const alert = this.alertCtrl.create({

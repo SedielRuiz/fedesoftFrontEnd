@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
 
 /*************************************COMPONENTES**************************/
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
@@ -12,9 +13,9 @@ import { ListPage } from '../pages/list/list';
 
 import { RegisterPage } from '../pages/register/register';
 import { PrincipalPage } from '../pages/principal/principal';
-import { ProviderUsersProvider } from '../providers/provider-users/provider-users';
-import { HttpClientModule } from '@angular/common/http';
+import { ProfilePage } from '../pages/profile/profile';
 /***************************************PROVEEDORES***********************/
+import { ProviderUsersProvider } from '../providers/provider-users/provider-users';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LocationsProvider } from '../providers/locations/locations';
@@ -38,7 +39,8 @@ import { CommentsForumsProvider } from '../providers/comments-forums/comments-fo
     ListPage,
     RegisterPage,
     LoginPage,
-    PrincipalPage
+    PrincipalPage,
+    ProfilePage
   ],
   imports: [
     BrowserModule,
@@ -53,7 +55,8 @@ import { CommentsForumsProvider } from '../providers/comments-forums/comments-fo
     ListPage,
     RegisterPage,
     LoginPage,
-    PrincipalPage
+    PrincipalPage,
+    ProfilePage
   ],
   providers: [
     StatusBar,

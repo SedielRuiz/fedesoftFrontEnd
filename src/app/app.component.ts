@@ -7,6 +7,7 @@ import { ListPage } from '../pages/list/list';
 import { RegisterPage } from '../pages/register/register';
 import { LoginPage } from '../pages/login/login';
 import { PrincipalPage } from '../pages/principal/principal';
+import { ProfilePage } from '../pages/profile/profile';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -19,7 +20,7 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   // make HelloIonicPage the root (or first) page
-  rootPage = HelloIonicPage;
+  rootPage = LoginPage;
   pages: Array<{title: string, component: any}>;
 
   constructor(
@@ -33,9 +34,9 @@ export class MyApp {
 
     // set our app's pages
     this.pages = [
-      { title: 'Inicio', component: HelloIonicPage },
-      { title: 'Login', component: LoginPage },
-      { title: 'Registrate', component: RegisterPage }
+      { title: 'Inicio', component: PrincipalPage },
+      { title: 'Perfil', component: ProfilePage },
+      { title: 'Riesgos', component: RegisterPage }
     ];
   }
 
@@ -56,6 +57,7 @@ export class MyApp {
   logOut(){
     localStorage.removeItem("user")
     localStorage.removeItem("jwt")
+    this.menu.close();
     this.nav.setRoot(LoginPage)
   }
   public isThereASession():boolean{

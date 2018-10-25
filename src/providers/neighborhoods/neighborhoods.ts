@@ -13,7 +13,7 @@ import { HttpHeaders } from '@angular/common/http';
 */
 @Injectable()
 export class NeighborhoodsProvider {
-  baseUrl:string="http://127.0.0.1:3000";
+  baseUrl:string="https://preve-ya.herokuapp.com";
   constructor(public http: HttpClient) {
     console.log('Hello NeighborhoodProvider Provider');
   }

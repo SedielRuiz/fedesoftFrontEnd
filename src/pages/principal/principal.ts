@@ -14,12 +14,11 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'principal.html',
 })
 export class PrincipalPage {
-
+  search:string;
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad PrincipalPage');
   }
 
 }

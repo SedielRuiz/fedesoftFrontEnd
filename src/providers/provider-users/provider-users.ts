@@ -24,7 +24,7 @@ export class Group {
 */
 @Injectable()
 export class ProviderUsersProvider {
-  baseUrl:string="http://127.0.0.1:3000";
+  baseUrl:string="https://preve-ya.herokuapp.com";
   constructor(public http: HttpClient) {
   }
   getUsers(id){
@@ -58,12 +58,14 @@ export class ProviderUsersProvider {
     return this.http.post(this.baseUrl+'/users', jsonA, options)
   }
   putUser(json){
+    let jwt=localStorage.getItem("jwt");
     let headers = new HttpHeaders(
-      {
-        'Content-Type': 'application/json'
-      });
-      const options = { headers: headers };
-      let jsonA = JSON.stringify(json);
-      return this.http.put(this.baseUrl+'/users', jsonA, options)
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    let jsonA = JSON.stringify(json);
+    return this.http.put(this.baseUrl+'/users/'+json["id"], jsonA, options)
   }
 }

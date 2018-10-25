@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ProviderUsersProvider, Group } from '../../providers/provider-users/provider-users';
 import { PrincipalPage } from '../../pages/principal/principal';
+import { RegisterPage } from '../../pages/register/register';
 import { AlertController } from 'ionic-angular';
 /**
  * Generated class for the LoginPage page.
@@ -33,7 +34,9 @@ export class LoginPage {
         this.navCtrl.setRoot(PrincipalPage);
     }
   }
-
+  singUp(){
+    this.navCtrl.setRoot(RegisterPage);
+  }
   singIn(){
     let json = {
       "auth":{
@@ -44,18 +47,26 @@ export class LoginPage {
     this.provider.tokenUser(json)
     .subscribe(
       (data)=>{
-        localStorage.setItem('user', JSON.stringify(data["user"]));
         localStorage.setItem('jwt', data["jwt"]);
-        this.showInside(data);
+        this.setUder();
+      },
+      (error)=>{console.log(error);this.showError(error)}
+    );
+  }
+  setUder(){
+    this.provider.getUsers(3)
+    .subscribe(
+      (data)=>{
+        localStorage.setItem('user', JSON.stringify(data["name"]));
+        this.showInside(data["name"]);
         this.navCtrl.setRoot(PrincipalPage);
       },
       (error)=>{console.log(error);this.showError(error)}
-    );;
+    );
   }
-  showInside(data): any {
-    console.log(data)
+  showInside(name): any {
     this.alertCtrl.create({
-        title: "Bienvenido "+ data.name,
+        title: "Bienvenido "+ name,
         subTitle: "Estás en prevé ya!\n",
         buttons: ['Ok']
     }).present();
