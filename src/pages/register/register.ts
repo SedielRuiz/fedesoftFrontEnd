@@ -29,6 +29,7 @@ export class RegisterPage {
   userName:any;
   password:any;
   passwordConfirm:any;
+  neighborhoodId:any;
   constructor(public navCtrl: NavController, public alertCtrl: AlertController, public provider:ProviderUsersProvider) {
     this.person={};
     this.name="";
@@ -39,6 +40,7 @@ export class RegisterPage {
     this.userName="";
     this.password="";
     this.passwordConfirm="";
+    this.neighborhoodId="";
   }
 
   ionViewDidLoad() {
@@ -53,7 +55,8 @@ export class RegisterPage {
       "user_name":this.userName,
       "email":this.email,
       "password":this.password,
-      "password_confirmation":this.passwordConfirm
+      "password_confirmation":this.passwordConfirm,
+      "neighborhood_id":this.neighborhoodId
     }
     this.provider.postUser(json)
     .subscribe(

@@ -35,8 +35,7 @@ export class MyApp {
     this.pages = [
       { title: 'Inicio', component: HelloIonicPage },
       { title: 'Login', component: LoginPage },
-      { title: 'Registrate', component: RegisterPage },
-      { title: 'Principal', component: PrincipalPage }
+      { title: 'Registrate', component: RegisterPage }
     ];
   }
 

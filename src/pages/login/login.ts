@@ -55,8 +55,8 @@ export class LoginPage {
   showInside(data): any {
     console.log(data)
     this.alertCtrl.create({
-        title: "Bienvenido "+ data.userName,
-        subTitle: "Ya puedes ver tus listas\n",
+        title: "Bienvenido "+ data.name,
+        subTitle: "Estás en prevé ya!\n",
         buttons: ['Ok']
     }).present();
   }
