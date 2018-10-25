@@ -12,7 +12,6 @@ import { LoginPage } from '../pages/login/login';
 import { PrincipalPage } from '../pages/principal/principal';
 import { ProviderUsersProvider } from '../providers/provider-users/provider-users';
 import { HttpClientModule } from '@angular/common/http';
-import { TestPage } from '../pages/test/test';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -25,8 +24,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ListPage,
     RegisterPage,
     LoginPage,
-    PrincipalPage,
-    TestPage
+    PrincipalPage
   ],
   imports: [
     BrowserModule,
@@ -41,8 +39,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ListPage,
     RegisterPage,
     LoginPage,
-    PrincipalPage,
-    TestPage
+    PrincipalPage
   ],
   providers: [
     StatusBar,
