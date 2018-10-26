@@ -48,13 +48,14 @@ export class LoginPage {
     .subscribe(
       (data)=>{
         localStorage.setItem('jwt', data["jwt"]);
-        this.setUder();
+        this.setUser();
       },
       (error)=>{console.log(error);this.showError(error)}
     );
   }
-  setUder(){
-    this.provider.getUsers(3)
+  setUser(){
+    let json = {"email":this.userName}
+    this.provider.signIn(json)
     .subscribe(
       (data)=>{
         localStorage.setItem('user', JSON.stringify(data["name"]));
