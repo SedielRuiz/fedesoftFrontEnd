@@ -14,6 +14,9 @@ import { ListPage } from '../pages/list/list';
 import { RegisterPage } from '../pages/register/register';
 import { PrincipalPage } from '../pages/principal/principal';
 import { ProfilePage } from '../pages/profile/profile';
+import { RisksPage } from '../pages/risks/risks';
+import { MethodsPreventionsPage } from '../pages/methods-preventions/methods-preventions';
+import { ForumPage } from '../pages/forum/forum';
 /***************************************PROVEEDORES***********************/
 import { ProviderUsersProvider } from '../providers/provider-users/provider-users';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -30,6 +33,8 @@ import { ResultSurveysProvider } from '../providers/result-surveys/result-survey
 import { ApplySurveysProvider } from '../providers/apply-surveys/apply-surveys';
 import { ForumsProvider } from '../providers/forums/forums';
 import { CommentsForumsProvider } from '../providers/comments-forums/comments-forums';
+import { RatingsPage } from '../pages/ratings/ratings';
+import { SurveysPage } from '../pages/surveys/surveys';
 
 @NgModule({
   declarations: [
@@ -40,7 +45,12 @@ import { CommentsForumsProvider } from '../providers/comments-forums/comments-fo
     RegisterPage,
     LoginPage,
     PrincipalPage,
-    ProfilePage
+    ProfilePage,
+    RisksPage,
+    MethodsPreventionsPage,
+    ForumPage,
+    RatingsPage,
+    SurveysPage
   ],
   imports: [
     BrowserModule,
@@ -56,7 +66,12 @@ import { CommentsForumsProvider } from '../providers/comments-forums/comments-fo
     RegisterPage,
     LoginPage,
     PrincipalPage,
-    ProfilePage
+    ProfilePage,
+    RisksPage,
+    MethodsPreventionsPage,
+    ForumPage,
+    RatingsPage,
+    SurveysPage
   ],
   providers: [
     StatusBar,

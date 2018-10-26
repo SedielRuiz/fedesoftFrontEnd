@@ -8,6 +8,11 @@ import { RegisterPage } from '../pages/register/register';
 import { LoginPage } from '../pages/login/login';
 import { PrincipalPage } from '../pages/principal/principal';
 import { ProfilePage } from '../pages/profile/profile';
+import { RisksPage } from '../pages/risks/risks';
+import { MethodsPreventionsPage } from '../pages/methods-preventions/methods-preventions';
+import { ForumPage } from '../pages/forum/forum';
+import { RatingsPage } from '../pages/ratings/ratings';
+import { SurveysPage } from '../pages/surveys/surveys';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -36,7 +41,11 @@ export class MyApp {
     this.pages = [
       { title: 'Inicio', component: PrincipalPage },
       { title: 'Perfil', component: ProfilePage },
-      { title: 'Riesgos', component: RegisterPage }
+      { title: 'Riesgos', component: RisksPage },
+      { title: 'Metodos de prevención', component: MethodsPreventionsPage },
+      { title: 'Foros', component: ForumPage },
+      { title: 'Calificar plataforma', component: RatingsPage },
+      { title: 'Encuestas', component: SurveysPage }
     ];
   }
 
