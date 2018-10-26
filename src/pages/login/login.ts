@@ -3,7 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ProviderUsersProvider, Group } from '../../providers/provider-users/provider-users';
 import { PrincipalPage } from '../../pages/principal/principal';
 import { RegisterPage } from '../../pages/register/register';
-import { AlertController } from 'ionic-angular';
+import { AlertController, LoadingController } from 'ionic-angular';
 /**
  * Generated class for the LoginPage page.
  *
@@ -19,7 +19,7 @@ import { AlertController } from 'ionic-angular';
 export class LoginPage {
   userName:any;
   password:any;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:ProviderUsersProvider, public alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:ProviderUsersProvider, public alertCtrl: AlertController, public loadingCtrl: LoadingController) {
     this.password="";
     this.userName="";
   }
@@ -57,9 +57,17 @@ export class LoginPage {
     this.provider.signIn(this.userName)
     .subscribe(
       (data)=>{
-        localStorage.setItem('user', JSON.stringify(data["name"]));
-        this.showInside(data["name"]);
-        this.navCtrl.setRoot(PrincipalPage);
+        let loading = this.loadingCtrl.create({
+          content: '<ion-spinner name="bubbles"></ion-spinner>Espere un momento por favor'
+        });
+        loading.present();
+        setTimeout(() => {
+          loading.dismiss();
+          localStorage.setItem('user', JSON.stringify(data["name"]));
+          this.showInside(data["name"]);
+          this.navCtrl.setRoot(PrincipalPage);
+        }, 2000);
+
       },
       (error)=>{console.log(error);this.showError(error)}
     );

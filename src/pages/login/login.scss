@@ -6,7 +6,12 @@
 .imgLogo{
     margin-top: 123px;
 }
-
+ion-spinner * {
+  width: 28px;
+  height: 28px;
+  stroke: #444;
+  fill: #222;
+}
 #formLogin{
     //float: center;
     //margin: 15px auto;
