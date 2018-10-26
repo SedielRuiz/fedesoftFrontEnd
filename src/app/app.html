@@ -8,10 +8,10 @@
 
   <ion-content>
     <ion-list>
-      <button ion-item *ngFor="let p of pages" (click)="openPage(p)">
+      <button ion-item class="menu" *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}
       </button>
-      <button ion-item  *ngIf="isThereASession()" (click)="logOut()">
+      <button ion-item class="menu" *ngIf="isThereASession()" (click)="logOut()">
           Cerrar Sesion
       </button>
     </ion-list>
