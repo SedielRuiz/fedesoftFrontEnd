@@ -3,6 +3,9 @@
     width: 100%;
     height: 100%;
 }
+.pf{
+    background: url(../assets/imgs/loginF.jpg) no-repeat;
+}
 .imgLearning {
     width: 170px;
     height: 200px;
@@ -22,7 +25,8 @@
 .boxes {
     box-shadow: 8px 8px 8px #aaa; 
     border-radius: 12px;  
-    background: url(../assets/imgs/menuF.jpg) no-repeat !important;
+    background: #FFE5FB;
+    //background: url(../assets/imgs/menuF.jpg) no-repeat !important;
     width:100%;
     margin:0px auto;
     padding:8px;
@@ -36,7 +40,7 @@ hr {
     background-color: #AEDEAC !important;
 }
 .botones {
-    background-color: #AEDEAC;
+    background-color: #fff;
 }
 #learning{
     display: block;
