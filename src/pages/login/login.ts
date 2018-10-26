@@ -54,8 +54,7 @@ export class LoginPage {
     );
   }
   setUser(){
-    let json = {"email":this.userName}
-    this.provider.signIn(json)
+    this.provider.signIn(this.userName)
     .subscribe(
       (data)=>{
         localStorage.setItem('user', JSON.stringify(data["name"]));

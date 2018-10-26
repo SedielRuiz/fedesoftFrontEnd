@@ -27,7 +27,7 @@ export class ProviderUsersProvider {
   baseUrl:string="https://preve-ya.herokuapp.com";
   constructor(public http: HttpClient) {
   }
-  signIn(json){
+  signIn(email){
     let jwt=localStorage.getItem("jwt");
     let headers = new HttpHeaders(
     {
@@ -35,8 +35,7 @@ export class ProviderUsersProvider {
        'Authorization':'Bearer '+jwt
     });
     const options = { headers: headers };
-    let jsonA = JSON.stringify(json);
-    return this.http.post(this.baseUrl+'/signIn/', json, options);
+    return this.http.get(this.baseUrl+'/signIn/'+email, options);
   }
   getUsers(id){
     let jwt=localStorage.getItem("jwt");
