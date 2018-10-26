@@ -17,37 +17,62 @@
       <button id="btndismiss" (click)="dismiss()" >X</button>
     </ion-buttons>
     <br> <br>
-    <div class="formTest">
-        <section class="sectionQuestion"> 
-            <h1>aqui irá la pregunta</h1>
-        </section>
+    <div id="formQuestion1" >
+        <h1>Tu edad está entre</h1>
         <hr id="linequestion"> <br>
-        <ion-list radio-group [(ngModel)]="relationship">
             <ion-item>
-                <ion-label>opcion1</ion-label>
-                <ion-radio value="option1" checked></ion-radio>
+                <ion-label>15 - 18</ion-label>
+                <ion-checkbox id="optionsquestion1"></ion-checkbox>
             </ion-item>
             <ion-item>
-                <ion-label>option2</ion-label>
-                <ion-radio value="option2" checked></ion-radio>
+                <ion-label>19 - 30</ion-label>
+                <ion-checkbox id="optionsquestion1"></ion-checkbox>
             </ion-item>
             <ion-item>
-                <ion-label>option3</ion-label>
-                <ion-radio value="option3" checked></ion-radio>
+                <ion-label>31 - 40</ion-label>
+                <ion-checkbox id="optionsquestion1"></ion-checkbox>
             </ion-item>
             <ion-item>
-                <ion-label>opcion4</ion-label>
-                <ion-radio value="option1" checked></ion-radio>
+                <ion-label>40 o más</ion-label>
+                <ion-checkbox id="optionsquestion1"></ion-checkbox>
+            </ion-item>
+    </div>
+    <div id="formQuestion2" >
+        <h1>¿Utilizas métodos anticonceptivos?</h1>
+        <hr id="linequestion"> <br>  
+            <ion-item>
+                <ion-label>SI</ion-label>
+                <ion-checkbox id="optionsquestion2" ></ion-checkbox>
             </ion-item>
             <ion-item>
-                <ion-label>option5</ion-label>
-                <ion-radio value="option2" checked></ion-radio>
+                <ion-label>NO</ion-label>
+                <ion-checkbox id="optionsquestion2" ></ion-checkbox>
             </ion-item>
-            <ion-item>
-                <ion-label>option6</ion-label>
-                <ion-radio value="option3" checked></ion-radio>
-            </ion-item>
-        </ion-list>
+    </div>
+    <div id="formQuestion3" >
+            <h1>¿Tu menstruación es regular?</h1>
+            <hr id="linequestion"> <br>  
+                <ion-item>
+                    <ion-label>SI</ion-label>
+                    <ion-checkbox id="optionsquestion3" ></ion-checkbox>
+                </ion-item>
+                <ion-item>
+                    <ion-label>NO</ion-label>
+                    <ion-checkbox id="optionsquestion3" ></ion-checkbox>
+                </ion-item>
+        </div>
+        <div id="formQuestion4" >
+                <h1>¿Haces uso de preservativos durante las relaciones sexuales?</h1>
+                <hr id="linequestion"> <br>  
+                    <ion-item>
+                        <ion-label>SI</ion-label>
+                        <ion-checkbox id="optionsquestion4" ></ion-checkbox>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>NO</ion-label>
+                        <ion-checkbox id="optionsquestion4" ></ion-checkbox>
+                    </ion-item>
+            </div>
         <div id="sectionArrows" >
             <h1 >
                 <ion-icon id="hola" name="ios-arrow-dropleft-outline"></ion-icon> &nbsp;
@@ -60,8 +85,7 @@
             </ion-chip>
         </div>    
         <div id="messageQuestion">
-          <p id="ptext">Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s</p>
+          <p id="ptext">¿Sabias que? <br> Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo.</p>
         </div>
-    </div>
       
 </ion-content>
