@@ -6,12 +6,13 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>login</ion-title>
+  <ion-navbar style="background:#fff !important;">
+    <ion-title></ion-title>
   </ion-navbar>
 
 </ion-header>
   <ion-content padding class="grid-basic-page containerLog">
+  <img class="imgLogo" src="assets/imgs/LogoPreveYaBlanco.png">
     <form id="formLogin">
       <ion-item class="boxs">
           <ion-icon class="iconL" name="person" item-start></ion-icon>
@@ -28,8 +29,8 @@
       <ion-row>
         <ion-col col-1></ion-col>
         <ion-col col-10>
-          <button ion-button color="secondary" class="btnLogin" round (click)="singIn()">Entrar</button>
-          <button ion-button color="secondary" class="btnLogin" round (click)="singUp()">Registrarse</button>
+          <button ion-button class="btnLogin" round (click)="singIn()">Entrar</button>
+          <button ion-button class="btnLogin" round (click)="singUp()">Registrarse</button>
         </ion-col>
         <ion-col col-1></ion-col>
       </ion-row>
