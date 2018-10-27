@@ -57,14 +57,17 @@ export class LoginPage {
     this.provider.signIn(this.userName)
     .subscribe(
       (data)=>{
+        let dataUser=data[0];
+        console.log(data[0]);
         let loading = this.loadingCtrl.create({
           content: '<ion-spinner name="bubbles"></ion-spinner>Espere un momento por favor'
         });
         loading.present();
         setTimeout(() => {
           loading.dismiss();
-          localStorage.setItem('user', JSON.stringify(data["name"]));
-          this.showInside(data["name"]);
+          localStorage.setItem('user', JSON.stringify(dataUser["name"]));
+          localStorage.setItem('idU', JSON.stringify(dataUser["id"]));
+          this.showInside(dataUser["name"]);
           this.navCtrl.setRoot(PrincipalPage);
         }, 2000);
 
