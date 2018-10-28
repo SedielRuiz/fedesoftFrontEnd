@@ -17,7 +17,7 @@ export class NeighborhoodsProvider {
   constructor(public http: HttpClient) {
     console.log('Hello NeighborhoodProvider Provider');
   }
-  getNeighborhood(){
+  getNeighborhoods(){
     let jwt=localStorage.getItem("jwt");
     let headers = new HttpHeaders(
     {
@@ -27,7 +27,7 @@ export class NeighborhoodsProvider {
     const options = { headers: headers };
       
     let apiUrl=localStorage.getItem("apiUrl");
-    return this.http.get(this.baseUrl+'/neighborhoods/',options);
+    return this.http.get(this.baseUrl+'/neighborhoods',options);
   }
   postNeighborhood(json){
     let headers = new HttpHeaders(

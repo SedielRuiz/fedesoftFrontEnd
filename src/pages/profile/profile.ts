@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { ProviderUsersProvider, Group } from '../../providers/provider-users/provider-users';
 import { PrincipalPage } from '../../pages/principal/principal';
 import { AlertController } from 'ionic-angular';
+/***********************PROVIDERS*****/
+import { NeighborhoodsProvider } from '../../providers/neighborhoods/neighborhoods';
+import { ProviderUsersProvider, Group } from '../../providers/provider-users/provider-users';
 /**
  * Generated class for the ProfilePage page.
  *
@@ -24,7 +26,8 @@ export class ProfilePage {
   email:any;
   userName:any;
   neighborhoodId:any;
-  constructor(public navCtrl: NavController, public navParams: NavParams,  public provider:ProviderUsersProvider, public alertCtrl: AlertController) {
+  neighborhoods:any;
+  constructor(public navCtrl: NavController, public navParams: NavParams,  public provider:ProviderUsersProvider, public alertCtrl: AlertController, public providerNeig:NeighborhoodsProvider) {
     this.id;
     this.name="";
     this.lastName="";
@@ -33,14 +36,23 @@ export class ProfilePage {
     this.email="";
     this.userName="";
     this.neighborhoodId="";
+    this.neighborhoods=[];
     this.loadData();
+    this.loadNeighborhoods();
   }
-
   ionViewDidLoad() {
+  }
+  loadNeighborhoods(){
+    this.providerNeig.getNeighborhoods()
+    .subscribe(
+      (data)=>{
+        this.neighborhoods = data;
+      },
+      (error)=>{console.log(error);}
+    );
   }
   updateData(){
     let json = {
-      "id":this.id,
       "name":this.name,
       "last_name":this.lastName,
       "phone":this.phone,
@@ -49,7 +61,7 @@ export class ProfilePage {
       "email":this.email,
       "neighborhood_id":this.neighborhoodId
     }
-    this.provider.putUser(json)
+    this.provider.putUser(json, this.id)
     .subscribe(
       (data)=>{
         this.exit(data["name"]);

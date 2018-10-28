@@ -58,7 +58,6 @@ export class LoginPage {
     .subscribe(
       (data)=>{
         let dataUser=data[0];
-        console.log(data[0]);
         let loading = this.loadingCtrl.create({
           content: '<ion-spinner name="bubbles"></ion-spinner>Espere un momento por favor'
         });

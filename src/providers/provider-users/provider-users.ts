@@ -29,53 +29,53 @@ export class ProviderUsersProvider {
   }
   signIn(email){
     let jwt=localStorage.getItem("jwt");
-    let headers = new HttpHeaders(
+    let headersSign = new HttpHeaders(
     {
        'Content-Type': 'application/json',
        'Authorization':'Bearer '+jwt
     });
-    const options = { headers: headers };
-    return this.http.get(this.baseUrl+'/signIn/'+email, options);
+    const optionsSignIn = { headers: headersSign };
+    return this.http.get(this.baseUrl+'/signIn/'+email, optionsSignIn);
   }
   getUsers(id){
     let jwt=localStorage.getItem("jwt");
-    let headers = new HttpHeaders(
+    let headersGet = new HttpHeaders(
     {
        'Content-Type': 'application/json',
        'Authorization':'Bearer '+jwt
     });
-    const options = { headers: headers };
+    const optionsGet = { headers: headersGet };
       
     let apiUrl=localStorage.getItem("apiUrl");
-    return this.http.get(this.baseUrl+'/users/'+id,options);
+    return this.http.get(this.baseUrl+'/users/'+id,optionsGet);
   }
   tokenUser(json){
-    let headers = new HttpHeaders(
+    let headersToken = new HttpHeaders(
       {
         'Content-Type': 'application/json'
       });
-      const options = { headers: headers };
+      const optionsToken = { headers: headersToken };
       let jsonA = JSON.stringify(json);
-      return this.http.post(this.baseUrl+'/user_token', jsonA, options)
+      return this.http.post(this.baseUrl+'/user_token', jsonA, optionsToken)
   }
   postUser(json){
-    let headers = new HttpHeaders(
+    let headersPost = new HttpHeaders(
     {
       'Content-Type': 'application/json'
     });
-    const options = { headers: headers };
+    const optionsPost = { headers: headersPost };
     let jsonA = JSON.stringify(json);
-    return this.http.post(this.baseUrl+'/users', jsonA, options)
+    return this.http.post(this.baseUrl+'/users', jsonA, optionsPost)
   }
-  putUser(json){
+  putUser(json, id){
     let jwt=localStorage.getItem("jwt");
-    let headers = new HttpHeaders(
+    let headersPut = new HttpHeaders(
     {
-       'Content-Type': 'application/json',
-       'Authorization':'Bearer '+jwt
+      'Content-Type': 'application/json',
+      'Authorization':'Bearer '+jwt
     });
-    const options = { headers: headers };
-    let jsonA = JSON.stringify(json);
-    return this.http.put(this.baseUrl+'/users/'+json["id"], jsonA, options)
+    const optionsPut = { headers: headersPut };
+    let jsonPut = JSON.stringify(json);
+    return this.http.put(this.baseUrl+'/users/'+id, jsonPut, optionsPut)
   }
 }

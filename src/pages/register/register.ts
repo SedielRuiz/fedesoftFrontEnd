@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup, FormControl  } from '@angular/forms';
 import { AlertController } from 'ionic-angular';
-import { ProviderUsersProvider, Group } from '../../providers/provider-users/provider-users';
 import { ModalController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
-
+/***********************PROVIDERS*****/
+import { NeighborhoodsProvider } from '../../providers/neighborhoods/neighborhoods';
+import { ProviderUsersProvider, Group } from '../../providers/provider-users/provider-users';
 /**
  * Generated class for the RegisterPage page.
  *
@@ -31,7 +32,8 @@ export class RegisterPage {
   passwordConfirm:any;
   neighborhoodId:any;
   rlb:any;
-  constructor(public navCtrl: NavController, public alertCtrl: AlertController, public provider:ProviderUsersProvider) {
+  neighborhoods:any;
+  constructor(public navCtrl: NavController, public alertCtrl: AlertController, public providerUser:ProviderUsersProvider, public providerNeig:NeighborhoodsProvider) {
     this.rlb="";
     this.person={};
     this.name="";
@@ -43,10 +45,20 @@ export class RegisterPage {
     this.password="";
     this.passwordConfirm="";
     this.neighborhoodId="";
+    this.neighborhoods=[];
+    this.loadNeighborhoods();
   }
-
   ionViewDidLoad() {
     console.log('ionViewDidLoad RegisterPage');
+  }
+  loadNeighborhoods(){
+    this.providerNeig.getNeighborhoods()
+    .subscribe(
+      (data)=>{
+        this.neighborhoods = data;
+      },
+      (error)=>{console.log(error);}
+    );
   }
   saveData() {
     let json = {
@@ -60,7 +72,7 @@ export class RegisterPage {
       "password_confirmation":this.passwordConfirm,
       "neighborhood_id":this.neighborhoodId
     }
-    this.provider.postUser(json)
+    this.providerUser.postUser(json)
     .subscribe(
       (data)=>{
         this.navCtrl.setRoot(LoginPage);
@@ -69,15 +81,7 @@ export class RegisterPage {
     );
   }
   goBack() {
-    this.navCtrl.pop();
-  }
-  alerts(){
-    const alert = this.alertCtrl.create({
-      title: 'New Friend!',
-      subTitle: 'Your friend, Obi wan Kenobi, just accepted your friend request!',
-      buttons: ['OK']
-    });
-    alert.present();
+    this.navCtrl.setRoot(LoginPage);
   }
   showPrompt() {
     const prompt = this.alertCtrl.create({

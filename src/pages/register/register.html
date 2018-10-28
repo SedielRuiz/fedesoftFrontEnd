@@ -1,11 +1,11 @@
 <ion-header>
   <ion-navbar>
-      <button navPop (click)="goBack()" >Go Back</button>
+    <ion-icon (click)="goBack()" name="ios-arrow-dropleft" id="goBack" item-start></ion-icon>
     <ion-title>Registro</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding class="grid-basic-page">
   <form id="formCreate">
     <h5>Aqui comienza tu experiencia</h5>
     <ion-list>
@@ -37,7 +37,9 @@
       <ion-item>
         <ion-icon class="iconR" name="ios-compass" item-start></ion-icon>
         <ion-label floating>Barrio</ion-label>
-        <ion-input type="text" [(ngModel)]="neighborhoodId" id="neighborhoodId" name="neighborhoodId"></ion-input>
+        <ion-select [(ngModel)]="neighborhoodId" name="neighborhoodId">
+          <ion-option *ngFor="let n of neighborhoods" value="{{n.id}}">{{n.name_neighborhood}}</ion-option>
+        </ion-select>
       </ion-item>
       <ion-item>
         <ion-icon class="iconR" name="md-person" item-start></ion-icon>
@@ -54,7 +56,15 @@
           <ion-label floating>Confirmar contraseña</ion-label>
           <ion-input type="password" [(ngModel)]="passwordConfirm" id="passwordConfirm" name="passwordConfirm"></ion-input>
         </ion-item>
-      <button ion-button type="button" class="col-md-12" (click)="saveData()">Guardar</button>
-    </ion-list>
-  </form>
+      </ion-list>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-1></ion-col>
+          <ion-col col-10>
+            <button ion-button type="button" class="btns" (click)="saveData()">Guardar</button>
+          </ion-col>
+          <ion-col col-1></ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
 </ion-content>
