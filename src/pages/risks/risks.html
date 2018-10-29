@@ -9,12 +9,30 @@
 		<button ion-button menuToggle class="burguer">
 	      <ion-icon name="menu"></ion-icon>
 	    </button>
-    	<ion-title>Riesgos</ion-title>
+    	<ion-title></ion-title>
   	</ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-
+	<div id="separator">
+      <h1>Riesgos</h1>
+      <div>
+          <ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>
+          <ion-input id="search" type="text" placeholder="Buscar"></ion-input>
+      </div>
+    </div>
+    <hr>
+	<div *ngFor="let r of risks" id="learning" class="risksDiv container">
+		<div class="boxes">
+			<img class="imgLearning" src="assets/imgs/riesgos.png">
+			<div>
+				<h4>{{r.name_risk}}</h4>
+				<p>{{r.description_risk}}</p>
+			</div>
+			<h4>Recomendaciones:</h4><br>
+			<p>{{r.recomendations_risks}}</p>
+		</div>
+	</div>
 </ion-content>

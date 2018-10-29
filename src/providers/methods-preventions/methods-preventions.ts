@@ -25,9 +25,7 @@ export class MethodsPreventionsProvider {
        'Authorization':'Bearer '+jwt
     });
     const options = { headers: headers };
-      
-    let apiUrl=localStorage.getItem("apiUrl");
-    return this.http.get(this.baseUrl+'/methods_preventions/',options);
+    return this.http.get(this.baseUrl+'/methods_preventions',options);
   }
   postMethodPrevention(json){
     let headers = new HttpHeaders(

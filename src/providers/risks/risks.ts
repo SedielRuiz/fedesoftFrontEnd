@@ -25,9 +25,7 @@ export class RisksProvider {
        'Authorization':'Bearer '+jwt
     });
     const options = { headers: headers };
-      
-    let apiUrl=localStorage.getItem("apiUrl");
-    return this.http.get(this.baseUrl+'/risks/',options);
+    return this.http.get(this.baseUrl+'/risks',options);
   }
   postRisk(json){
     let headers = new HttpHeaders(

@@ -59,23 +59,23 @@ export class ProviderUsersProvider {
       return this.http.post(this.baseUrl+'/user_token', jsonA, optionsToken)
   }
   postUser(json){
-    let headersPost = new HttpHeaders(
+    let headers = new HttpHeaders(
     {
       'Content-Type': 'application/json'
     });
-    const optionsPost = { headers: headersPost };
+    const options = { headers: headers };
     let jsonA = JSON.stringify(json);
-    return this.http.post(this.baseUrl+'/users', jsonA, optionsPost)
+    return this.http.post(this.baseUrl+'/users', jsonA, options)
   }
   putUser(json, id){
     let jwt=localStorage.getItem("jwt");
-    let headersPut = new HttpHeaders(
+    let headers = new HttpHeaders(
     {
       'Content-Type': 'application/json',
       'Authorization':'Bearer '+jwt
     });
-    const optionsPut = { headers: headersPut };
+    const options = { headers: headers };
     let jsonPut = JSON.stringify(json);
-    return this.http.put(this.baseUrl+'/users/'+id, jsonPut, optionsPut)
+    return this.http.put(this.baseUrl+'/users/'+id, jsonPut, options)
   }
 }

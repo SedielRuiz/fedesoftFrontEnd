@@ -1,0 +1,4 @@
+#Sat Oct 27 23:11:25 COT 2018
+base.0=C\:\\Users\\Administrador\\Desktop\\Proyecto fullstack\\fedesoftFrontEnd\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+path.0=classes.dex
+renamed.0=classes.dex

@@ -15,7 +15,24 @@ import { HttpHeaders } from '@angular/common/http';
 export class CommentsForumsProvider {
   baseUrl:string="https://preve-ya.herokuapp.com";
   constructor(public http: HttpClient) {
-    console.log('Hello CommentsForumsProvider Provider');
   }
-
+  getCommentsForum(id){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    return this.http.get(this.baseUrl+'/comments_forums/'+id,options);
+  }
+  postCommentsForum(json){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json'
+    });
+    const options = { headers: headers };
+    return this.http.post(this.baseUrl+'/comments_forums',json, options);
+  }
 }

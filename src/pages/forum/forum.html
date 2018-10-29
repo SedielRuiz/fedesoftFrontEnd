@@ -6,15 +6,23 @@
 -->
 <ion-header>
   	<ion-navbar>
-		<button ion-button menuToggle class="burguer">
+			<button ion-button menuToggle class="burguer">
 	      <ion-icon name="menu"></ion-icon>
 	    </button>
-    	<ion-title>Foros</ion-title>
+    	<ion-title></ion-title>
   	</ion-navbar>
 
 </ion-header>
 
-
 <ion-content padding>
-
+	<div id="separator">
+		<h1>Foros</h1>
+		<div>
+				<ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>
+				<ion-input id="search" type="text" placeholder="Buscar"></ion-input>
+		</div>
+	</div><hr>
+	<ion-list>
+		<button ion-item round class="listForum" *ngFor="let f of forums" (click)="openForum(f)" title="{{f.title_forum}}">{{f.title_forum}}</button>
+	</ion-list>
 </ion-content>

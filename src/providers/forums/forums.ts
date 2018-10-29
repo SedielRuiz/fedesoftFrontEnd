@@ -15,7 +15,15 @@ import { HttpHeaders } from '@angular/common/http';
 export class ForumsProvider {
   baseUrl:string="https://preve-ya.herokuapp.com";
   constructor(public http: HttpClient) {
-    console.log('Hello ForumsProvider Provider');
   }
-
+  getForums(){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    return this.http.get(this.baseUrl+'/forums',options);
+  }
 }

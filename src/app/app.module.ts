@@ -17,6 +17,7 @@ import { ProfilePage } from '../pages/profile/profile';
 import { RisksPage } from '../pages/risks/risks';
 import { MethodsPreventionsPage } from '../pages/methods-preventions/methods-preventions';
 import { ForumPage } from '../pages/forum/forum';
+import { CommentForumPage } from '../pages/comment-forum/comment-forum';
 /***************************************PROVEEDORES***********************/
 import { ProviderUsersProvider } from '../providers/provider-users/provider-users';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -50,7 +51,8 @@ import { SurveysPage } from '../pages/surveys/surveys';
     MethodsPreventionsPage,
     ForumPage,
     RatingsPage,
-    SurveysPage
+    SurveysPage,
+    CommentForumPage
   ],
   imports: [
     BrowserModule,
@@ -71,7 +73,8 @@ import { SurveysPage } from '../pages/surveys/surveys';
     MethodsPreventionsPage,
     ForumPage,
     RatingsPage,
-    SurveysPage
+    SurveysPage,
+    CommentForumPage
   ],
   providers: [
     StatusBar,

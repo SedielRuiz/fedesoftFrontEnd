@@ -16,5 +16,28 @@
 
 
 <ion-content padding>
-
+	<div id="separator">
+      <h1>Metodos de prevención</h1>
+      <div>
+          <ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>
+          <ion-input id="search" type="text" placeholder="Buscar"></ion-input>
+      </div>
+    </div>
+    <hr>
+	<div *ngFor="let m of methods" id="learning" class="methodsDiv container">
+		<div class="boxes">
+			<img class="imgLearning" src="assets/imgs/riesgos.png">
+			<div>
+				<h4>{{m.name_method}}</h4>
+				<p class="contentMethod">{{m.description_method}}</p>
+				<h6>Duración</h6>
+				<p *ngIf="m.type_duration == 1">{{m.duration_method}} Horas</p>
+				<p *ngIf="m.type_duration == 2">{{m.duration_method}} Días</p>
+				<p *ngIf="m.type_duration == 3">{{m.duration_method}} Meses</p>
+				<p *ngIf="m.type_duration == 4">{{m.duration_method}} Años</p>
+				<h4>Recomendaciones:</h4>
+				<p >{{m.recommendations_method}}</p>
+			</div>
+		</div>
+	</div>
 </ion-content>
