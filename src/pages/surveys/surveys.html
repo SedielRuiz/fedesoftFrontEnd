@@ -17,5 +17,14 @@
 
 
 <ion-content padding>
-
+  <div id="separator">
+		<h1>Encuestas</h1>
+		<div>
+				<ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>
+				<ion-input id="search" type="text" placeholder="Buscar"></ion-input>
+		</div>
+	</div><hr>
+	<ion-list>
+		<button ion-item round class="listSurvey" *ngFor="let s of surveys" (click)="openSurvey(s)" title="{{s.name_poll}}">{{s.name_poll}}</button>
+	</ion-list>
 </ion-content>

@@ -15,7 +15,57 @@ import { HttpHeaders } from '@angular/common/http';
 export class ApplySurveysProvider {
   baseUrl:string="https://preve-ya.herokuapp.com";
   constructor(public http: HttpClient) {
-    console.log('Hello ApplySurveysProvider Provider');
   }
-
+  getSurveys(){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    return this.http.get(this.baseUrl+'/polls',options);
+  }
+  /*******************CARGAR ENCUESTA***********************/
+  getQuestions(){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    return this.http.get(this.baseUrl+'/questions',options);
+  }
+  getSurvey(id){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    return this.http.get(this.baseUrl+'/polls/'+id,options);
+  }
+  getQuestionsSurvey(id){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    return this.http.get(this.baseUrl+'/questionsPoll/'+id,options);
+  }
+  getOptionsQuestion(id){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    return this.http.get(this.baseUrl+'/optionsQuestion/'+id,options);
+  }
+  /****************FIN CARGAR ENCUESTA***********************/
 }

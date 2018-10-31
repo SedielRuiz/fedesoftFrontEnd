@@ -1,5 +1,5 @@
 <!--
-  Generated template for the ApplySurveyPage page.
+  Generated template for the ModalTestPage page.
 
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
@@ -7,12 +7,44 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>apply-survey</ion-title>
+    <ion-title>Encuesta</ion-title>
   </ion-navbar>
 
 </ion-header>
 
-
 <ion-content padding>
+    <ion-buttons end>
+      <button id="btndismiss" (click)="dismiss()" >X</button>
+    </ion-buttons>
+    <br> <br>
+    <h1>{{survey.name_poll}}</h1>
 
+    <div *ngFor="let q of questionsSurvey" id="'formQuestion_{{q.poll_id}}_{{q.question_id}}">
+      <div *ngFor="let qa of questions">
+        <p *ngIf="q.question_id == qa.id" class="opcQ">{{qa.concept_quiestion}}</p>
+      </div>
+      <hr id="linequestion"><br>
+      <ion-list radio-group >
+        <div *ngFor="let opc of optionsQuestion">
+          <ion-item *ngIf="opc.question_id == q.question_id">
+            <ion-label>{{opc.description_opction}}</ion-label>
+            <ion-radio id="opc_{{opc.question_id}}" value="{{opc.question_id}}"></ion-radio>
+          </ion-item><br>
+        </div>
+      </ion-list>
+      <div id="sectionArrows" >
+          <h1>
+              <ion-icon id="hola" name="ios-arrow-dropleft-outline" (click)="navigateQuestion(q.poll_id , q.question_id , 'l')"></ion-icon> &nbsp;
+              <ion-icon id="hola" name="ios-arrow-dropright-outline" (click)="navigateQuestion(q.poll_id , q.question_id , 'n')"></ion-icon>
+          </h1> 
+      </div>
+    </div><br>
+    <div id="counter" >
+        <ion-chip id="chipcountuner">
+            <ion-label>Pregunta {{numberQuestion}} de {{totalQuestions}}</ion-label>
+        </ion-chip>
+    </div>    
+    <div id="messageQuestion">
+      <p id="ptext">¿Sabias que? <br> Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo.</p>
+    </div>
 </ion-content>

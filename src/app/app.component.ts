@@ -13,6 +13,7 @@ import { MethodsPreventionsPage } from '../pages/methods-preventions/methods-pre
 import { ForumPage } from '../pages/forum/forum';
 import { RatingsPage } from '../pages/ratings/ratings';
 import { SurveysPage } from '../pages/surveys/surveys';
+import { ApplySurveyPage } from '../pages/apply-survey/apply-survey';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
