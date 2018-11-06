@@ -23,7 +23,7 @@ export class PrincipalPage {
   slides = [
     {
       title: "Riesgos?",
-      description: "<b>Detalle</b> aqui van los riesgos khzcgvejnf smcmb bdsbc,  aadgkdxxhbw.cf ,jdgs...<br><a href='#'>Leer más</a>",
+      description: "<b>Detalle</b> Infección en el embarazo...<br><a href='#'>Leer más</a>",
       image: "assets/imgs/riesgos.png",
     },
     {

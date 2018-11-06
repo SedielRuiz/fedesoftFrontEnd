@@ -15,7 +15,25 @@ import { HttpHeaders } from '@angular/common/http';
 export class ResultSurveysProvider {
   baseUrl:string="https://preve-ya.herokuapp.com";
   constructor(public http: HttpClient) {
-    console.log('Hello ResultSurveysProvider Provider');
+    
+  }
+  saveApplyPoll(){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json'
+    });
+    const options = { headers: headers };
+    return this.http.post(this.baseUrl+'/apply_surveys',json, options);
+  }
+  saveAnswersPoll(){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json'
+    });
+    const options = { headers: headers };
+    return this.http.post(this.baseUrl+'/result_surveys',json, options);
   }
 
 }

@@ -10,9 +10,26 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-    <h3>{{forum.title_forum}}</h3><hr>
+    <h3 class="tittle">{{forum.title_forum}}</h3><hr>
     <h5>Objetivo</h5>
     <p>{{forum.objective_forum}}</p><hr>
+    <ion-item class="" >
+      <div *ngFor="let c of comments">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-1>
+              <ion-icon class="iconComment" name="md-person"></ion-icon>
+            </ion-col>
+            <ion-col col-11>  
+              <div *ngFor="let u of users">
+                <p *ngIf="u.id == c.user_id"class="commentU">{{u.user_name}}</p>
+              </div>
+              <p class="comment"><ion-icon name="paper-plane"></ion-icon> {{c.comment_forum}}</p>
+            </ion-col>
+          </ion-row>
+        </ion-grid><hr>
+      </div>
+    </ion-item>
     <ion-item class="">
         <ion-icon class="commit" name="ios-create" item-start></ion-icon>
         <ion-label floating>Comentario</ion-label>

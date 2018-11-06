@@ -14,8 +14,19 @@ import { HttpHeaders } from '@angular/common/http';
 @Injectable()
 export class PollsProvider {
   baseUrl:string="https://preve-ya.herokuapp.com";
+  jwt:string = localStorage.getItem("jwt");
+  headers:HttpHeaders = new HttpHeaders({
+    'Content-type': 'application/json',
+    'Authorization': 'Bearer ' + this.jwt
+  });
+  
   constructor(public http: HttpClient) {
-    console.log('Hello PollsProvider Provider');
   }
-
+  getPool( id:number ) {
+    const options = {headers: this.headers};
+    console.warn('options >>', options);
+    return this.http.get(
+      this.baseUrl + '/polls/' + id, options
+    );
+  }
 }

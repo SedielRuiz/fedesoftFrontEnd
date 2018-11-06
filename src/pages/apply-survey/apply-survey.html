@@ -7,43 +7,46 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Encuesta</ion-title>
+    <ion-title></ion-title>
   </ion-navbar>
 
 </ion-header>
 
-<ion-content padding>
-    <ion-buttons end>
-      <button id="btndismiss" (click)="dismiss()" >X</button>
-    </ion-buttons>
-    <br> <br>
-    <h1>{{survey.name_poll}}</h1>
 
-    <div *ngFor="let q of questionsSurvey" id="'formQuestion_{{q.poll_id}}_{{q.question_id}}">
-      <div *ngFor="let qa of questions">
-        <p *ngIf="q.question_id == qa.id" class="opcQ">{{qa.concept_quiestion}}</p>
+<ion-content *ngIf="Available" padding>
+    <button ion-button small class="btndismiss" (click)="dismiss()" >X</button>
+    <br><br><br>
+    <h1>{{survey.name_poll}}</h1>
+    <div>
+      <div>
+        <p class="opcQ">{{step + 1}}. {{currQuestion.concept_quiestion}}</p>
+        <hr id="linequestion">
+        <ion-list radio-group [(ngModel)]="answers[currQuestion.id]">
+          <div *ngFor="let opc of currQuestion.options_question">
+            <ion-item>
+              <ion-label>{{opc.description_opction}}</ion-label>
+              <ion-radio  value="{{opc.id}}" (ionSelect)="checksFullfilled()"></ion-radio> 
+            </ion-item>
+          </div>
+        </ion-list>
       </div>
-      <hr id="linequestion"><br>
-      <ion-list radio-group >
-        <div *ngFor="let opc of optionsQuestion">
-          <ion-item *ngIf="opc.question_id == q.question_id">
-            <ion-label>{{opc.description_opction}}</ion-label>
-            <ion-radio id="opc_{{opc.question_id}}" value="{{opc.question_id}}"></ion-radio>
-          </ion-item><br>
-        </div>
-      </ion-list>
+    </div>
+      <button ion-button round small class="btns btnSend" *ngIf="surveyFilled" (click)="sendAnswers()">Enviar</button>
+    <div>
+    </div>  
       <div id="sectionArrows" >
           <h1>
-              <ion-icon id="hola" name="ios-arrow-dropleft-outline" (click)="navigateQuestion(q.poll_id , q.question_id , 'l')"></ion-icon> &nbsp;
-              <ion-icon id="hola" name="ios-arrow-dropright-outline" (click)="navigateQuestion(q.poll_id , q.question_id , 'n')"></ion-icon>
+              <ion-icon id="hola" name="ios-arrow-dropleft-outline" (click)="navigateQuestion(-1)"></ion-icon> &nbsp;
+              <ion-icon id="hola" name="ios-arrow-dropright-outline" (click)="navigateQuestion(1)"></ion-icon>
           </h1> 
-      </div>
-    </div><br>
+      </div>    
+       
     <div id="counter" >
         <ion-chip id="chipcountuner">
-            <ion-label>Pregunta {{numberQuestion}} de {{totalQuestions}}</ion-label>
+            <ion-label>Pregunta {{step + 1}} de {{totalQuestions}}</ion-label>
         </ion-chip>
-    </div>    
+    </div>   
+ 
     <div id="messageQuestion">
       <p id="ptext">¿Sabias que? <br> Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo.</p>
     </div>

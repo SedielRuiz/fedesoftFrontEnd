@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { CommentsForumsProvider } from '../../providers/comments-forums/comments-forums';
+import { ProviderUsersProvider, Group } from '../../providers/provider-users/provider-users';
+import { LoadingController } from 'ionic-angular';
 
 /**
  * Generated class for the CommentForumPage page.
@@ -18,10 +20,12 @@ export class CommentForumPage {
   forum={}
   comments:any
   commit:any
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:CommentsForumsProvider) {
+  users:any
+  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:CommentsForumsProvider, public providerUser:ProviderUsersProvider, public loadingCtrl: LoadingController) {
     this.forum = navParams.get("forum");
     this.comments=[]
     this.commit="";
+    this.loadUsers()
     this.loadComments()
   }
   ionViewDidLoad() {
@@ -37,6 +41,16 @@ export class CommentForumPage {
     .subscribe(
       (data)=>{
         this.comments.push(data);
+        this.commit="";
+      },
+      (error)=>{console.log(error);}
+    );
+  }
+  loadUsers(){
+    this.providerUser.getUsers(this.forum["id"])
+    .subscribe(
+      (data)=>{
+        this.users = data;
       },
       (error)=>{console.log(error);}
     );
@@ -45,7 +59,12 @@ export class CommentForumPage {
     this.provider.getCommentsForum(this.forum["id"])
     .subscribe(
       (data)=>{
+        let loading = this.loadingCtrl.create({
+          content: '<ion-spinner name="bubbles"></ion-spinner>Espere un momento por favor'
+        });
+        loading.present();
         this.comments = data;
+        loading.dismiss();  
       },
       (error)=>{console.log(error);}
     );

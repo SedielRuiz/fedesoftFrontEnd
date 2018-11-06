@@ -79,7 +79,7 @@ export class ProfilePage {
   }
   loadData(){
     let id=localStorage.getItem("idU");
-    this.provider.getUsers(id)
+    this.provider.getUser(id)
     .subscribe(
       (data)=>{
         this.id = data["id"];

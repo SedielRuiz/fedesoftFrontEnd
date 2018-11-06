@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ApplySurveysProvider } from '../../providers/apply-surveys/apply-surveys';
-
+import { PollsProvider } from '../../providers/polls/polls';
+import { LoadingController } from 'ionic-angular';
+import { SurveysPage } from '../../pages/surveys/surveys';
+import { ResultSurveysProvider } from '../../providers/result-surveys/result-surveys';
+import { ReportPollPage } from '../../pages/report-poll/report-poll';
 /**
  * Generated class for the ApplySurveyPage page.
  *
@@ -15,79 +19,116 @@ import { ApplySurveysProvider } from '../../providers/apply-surveys/apply-survey
   templateUrl: 'apply-survey.html',
 })
 export class ApplySurveyPage {
+  surveyFilled: number
+  currQuestion: any
+  answers: any
+  step: number  
+  Available: number;
   survey:any
-  questions:any
-  questionsSurvey:any
-  optionsQuestion:any
   totalQuestions:number
-  numberQuestion:number
-  constructor(public navCtrl: NavController, public navParams: NavParams, private view: ViewController,  public provider:ApplySurveysProvider) {
-    this.survey = navParams.get("survey");
-    this.questionsSurvey=[]
-    this.optionsQuestion=[]
-    this.questions=[]
-    this.numberQuestion=1;
-    this.loadQuestions()
-    this.loadSurvey()
+  numQ:number
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private view: ViewController,  
+    public provider:ApplySurveysProvider,
+    public pollProvider: PollsProvider, 
+    public loadingCtrl: LoadingController,
+    public providerResult: ResultSurveysProvider
+    ) {
+    this.Available=0;
+    this.surveyFilled = 0;
+    this.survey = navParams.get("survey");    
+    this.answers={};    
+    this.loadPoll();
   }
   /****************************CARGAR ENCUESTA***************************/
-  loadSurvey(){
-    this.provider.getSurvey(this.survey['id'])
+  loadPoll() {
+    this.pollProvider.getPool(this.survey.id)
     .subscribe(
-      (data)=>{
+      (data) => {    
+        let loading = this.loadingCtrl.create({
+          content: '<ion-spinner name="bubbles"></ion-spinner>Espere un momento por favor'
+        });
+        loading.present();
         this.survey = data;
-        this.loadQuestionsSurvey(this.survey)
-      },
-      (error)=>{console.log(error);}
-    );
+        this.currQuestion = this.survey.questions[0];
+        this.step = 0;
+        this.totalQuestions = this.survey.questions.length;
+        this.Available = 1;
+        loading.dismiss();  
+      }
+    )
   }
-  loadQuestions(){
-    this.provider.getQuestions()
+  /*************************FIN CARGAR ENCUESTA***************************/
+  /**************NAVEGAR ENTRE PREGUNTAS*************/
+  navigateQuestion(step) {
+
+    if(this.step + step < 0) {    
+      return;
+    }
+
+    if(this.step + step >= this.totalQuestions) {      
+      return;
+    }
+
+    this.step += step;    
+    this.currQuestion = this.survey.questions[this.step];                
+  }
+
+  checksFullfilled() {    
+    if(Object.keys(this.answers).length == this.totalQuestions) {
+      this.surveyFilled = 1;
+    }    
+  }
+
+  dismiss(){
+    this.navCtrl.setRoot(SurveysPage);
+  }
+  /**********************GUARDAR ENCUESTA********************/
+  sendApply(){
+    console.log(this.answers)
+    let id=localStorage.getItem("idU");
+    let json = {
+      "user_id":id,
+      "poll_id":this.survey.id
+    }
+    this.providerResult.saveApplyPoll(json)
     .subscribe(
       (data)=>{
-        this.questions = data;
+        if(data){
+          this.loadAnswers(data.id)
+        }
       },
       (error)=>{console.log(error);}
     );
   }
-  loadQuestionsSurvey(survey){
-    this.provider.getQuestionsSurvey(survey['id'])
-    .subscribe(
-      (data)=>{
-        this.questionsSurvey = data;
-        this.totalQuestions = this.questionsSurvey.length; 
-        this.loadOptionsQuestion(this.questionsSurvey)
-      },
-      (error)=>{console.log(error);}
-    );
+  loadAnswers(id){
+    let arr =[];
+    this.survey.questions.forEach(item => {
+      arr.push({
+        "answer": answers[item.id],
+        "poll_id": this.survey.id,
+        "question_id": item.id,
+        "apply_survey_id": id
+      })
+    });
+    this.sendAnswers(arr)
   }
-  loadOptionsQuestion(question){
-    question.forEach(q => {
-      this.provider.getOptionsQuestion(q['question_id'])
+  sendAnswers(arr){
+    arr.forEach(element => {  
+      this.providerResult.saveAnswersPoll(json)
       .subscribe(
         (data)=>{
-          this.loadArrOptions(data)
+          if(data){
+            this.navCtrl.setRoot(ReportPollPage, {
+              type: this.survey.type_poll,
+            });
+          }
         },
         (error)=>{console.log(error);}
       );
     });
   }
-  loadArrOptions(data){
-    data.forEach(opc => {
-      this.optionsQuestion.push(opc);
-    });
-  }
-  /*************************FIN CARGAR ENCUESTA***************************/
-  /**************NAVEGAR ENTRE PREGUNTAS*************/
-  navigateQuestion(idP, idQ, type){
-    let idBox = "formQuestion_"+idP+"_"+idQ;
-    if(type=="n"){
-      this.numberQuestion = this.numberQuestion+1;
-    }else{
-      this.numberQuestion = this.numberQuestion-1;
-    }
-  }
-  dismiss(){
-    this.view.dismiss();
-  }
+  /********************FIN GUARDAR ENCUESTA********************/
 }

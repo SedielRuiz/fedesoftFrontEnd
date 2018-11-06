@@ -37,7 +37,19 @@ export class ProviderUsersProvider {
     const optionsSignIn = { headers: headersSign };
     return this.http.get(this.baseUrl+'/signIn/'+email, optionsSignIn);
   }
-  getUsers(id){
+  getUsers(){
+    let jwt=localStorage.getItem("jwt");
+    let headersGet = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const optionsGet = { headers: headersGet };
+      
+    let apiUrl=localStorage.getItem("apiUrl");
+    return this.http.get(this.baseUrl+'/users',optionsGet);
+  }
+  getUser(id){
     let jwt=localStorage.getItem("jwt");
     let headersGet = new HttpHeaders(
     {

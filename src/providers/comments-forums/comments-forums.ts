@@ -24,7 +24,7 @@ export class CommentsForumsProvider {
        'Authorization':'Bearer '+jwt
     });
     const options = { headers: headers };
-    return this.http.get(this.baseUrl+'/comments_forums/'+id,options);
+    return this.http.get(this.baseUrl+'/commetsForum/'+id,options);
   }
   postCommentsForum(json){
     let jwt=localStorage.getItem("jwt");

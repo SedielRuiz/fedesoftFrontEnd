@@ -1,15 +1,20 @@
-#btndismiss{
-    background: #920E0E;
+.btndismiss{
+    background: rgb(179, 93, 182);
     border-radius: 360px;
     float: right;
     width: 30px;
     height: 20px;
+    margin-top: 39px;
+}
+.btnSend{
+    margin-top:-18px !important;
 }
 h1{
     text-align: center;
 }
 #hola{
     color: #4D9368;
+    cusor:pointer;
 }
 .opcQ{
     font-size: 17px;

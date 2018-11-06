@@ -1,13 +1,17 @@
-webpackJsonp([11],{
+webpackJsonp([12],{
 
-/***/ 105:
+/***/ 106:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ApplySurveyPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_polls_polls__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_surveys_surveys__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_result_surveys_result_surveys__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_report_poll_report_poll__ = __webpack_require__(107);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -17,6 +21,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
+
+
+
 
 
 
@@ -27,94 +36,168 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var ApplySurveyPage = /** @class */ (function () {
-    function ApplySurveyPage(navCtrl, navParams, view, provider) {
+    function ApplySurveyPage(navCtrl, navParams, view, provider, pollProvider, loadingCtrl, providerResult) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.view = view;
         this.provider = provider;
+        this.pollProvider = pollProvider;
+        this.loadingCtrl = loadingCtrl;
+        this.providerResult = providerResult;
+        this.Available = 0;
+        this.surveyFilled = 0;
         this.survey = navParams.get("survey");
-        this.questionsSurvey = [];
-        this.optionsQuestion = [];
-        this.questions = [];
-        this.numberQuestion = 1;
-        this.loadQuestions();
-        this.loadSurvey();
+        this.answers = {};
+        this.loadPoll();
     }
     /****************************CARGAR ENCUESTA***************************/
-    ApplySurveyPage.prototype.loadSurvey = function () {
+    ApplySurveyPage.prototype.loadPoll = function () {
         var _this = this;
-        this.provider.getSurvey(this.survey['id'])
+        this.pollProvider.getPool(this.survey.id)
             .subscribe(function (data) {
+            var loading = _this.loadingCtrl.create({
+                content: '<ion-spinner name="bubbles"></ion-spinner>Espere un momento por favor'
+            });
+            loading.present();
             _this.survey = data;
-            _this.loadQuestionsSurvey(_this.survey);
-        }, function (error) { console.log(error); });
-    };
-    ApplySurveyPage.prototype.loadQuestions = function () {
-        var _this = this;
-        this.provider.getQuestions()
-            .subscribe(function (data) {
-            _this.questions = data;
-        }, function (error) { console.log(error); });
-    };
-    ApplySurveyPage.prototype.loadQuestionsSurvey = function (survey) {
-        var _this = this;
-        this.provider.getQuestionsSurvey(survey['id'])
-            .subscribe(function (data) {
-            _this.questionsSurvey = data;
-            _this.totalQuestions = _this.questionsSurvey.length;
-            _this.loadOptionsQuestion(_this.questionsSurvey);
-        }, function (error) { console.log(error); });
-    };
-    ApplySurveyPage.prototype.loadOptionsQuestion = function (question) {
-        var _this = this;
-        question.forEach(function (q) {
-            _this.provider.getOptionsQuestion(q['question_id'])
-                .subscribe(function (data) {
-                _this.loadArrOptions(data);
-            }, function (error) { console.log(error); });
-        });
-    };
-    ApplySurveyPage.prototype.loadArrOptions = function (data) {
-        var _this = this;
-        data.forEach(function (opc) {
-            _this.optionsQuestion.push(opc);
+            _this.currQuestion = _this.survey.questions[0];
+            _this.step = 0;
+            _this.totalQuestions = _this.survey.questions.length;
+            _this.Available = 1;
+            loading.dismiss();
         });
     };
     /*************************FIN CARGAR ENCUESTA***************************/
     /**************NAVEGAR ENTRE PREGUNTAS*************/
-    ApplySurveyPage.prototype.navigateQuestion = function (idP, idQ, type) {
-        var idBox = "formQuestion_" + idP + "_" + idQ;
-        if (type == "n") {
-            this.numberQuestion = this.numberQuestion + 1;
+    ApplySurveyPage.prototype.navigateQuestion = function (step) {
+        if (this.step + step < 0) {
+            return;
         }
-        else {
-            this.numberQuestion = this.numberQuestion - 1;
+        if (this.step + step >= this.totalQuestions) {
+            return;
+        }
+        this.step += step;
+        this.currQuestion = this.survey.questions[this.step];
+    };
+    ApplySurveyPage.prototype.checksFullfilled = function () {
+        if (Object.keys(this.answers).length == this.totalQuestions) {
+            this.surveyFilled = 1;
         }
     };
     ApplySurveyPage.prototype.dismiss = function () {
-        this.view.dismiss();
+        this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_4__pages_surveys_surveys__["a" /* SurveysPage */]);
+    };
+    /**********************GUARDAR ENCUESTA********************/
+    ApplySurveyPage.prototype.sendApply = function () {
+        var _this = this;
+        console.log(this.answers);
+        var id = localStorage.getItem("idU");
+        var json = {
+            "user_id": id,
+            "poll_id": this.survey.id
+        };
+        this.providerResult.saveApplyPoll(json)
+            .subscribe(function (data) {
+            if (data) {
+                _this.loadAnswers(data.id);
+            }
+        }, function (error) { console.log(error); });
+    };
+    ApplySurveyPage.prototype.loadAnswers = function (id) {
+        var _this = this;
+        var arr = [];
+        this.survey.questions.forEach(function (item) {
+            arr.push({
+                "answer": answers[item.id],
+                "poll_id": _this.survey.id,
+                "question_id": item.id,
+                "apply_survey_id": id
+            });
+        });
+        this.sendAnswers(arr);
+    };
+    ApplySurveyPage.prototype.sendAnswers = function (arr) {
+        var _this = this;
+        arr.forEach(function (element) {
+            _this.providerResult.saveAnswersPoll(json)
+                .subscribe(function (data) {
+                if (data) {
+                    _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_6__pages_report_poll_report_poll__["a" /* ReportPollPage */], {
+                        type: _this.survey.type_poll,
+                    });
+                }
+            }, function (error) { console.log(error); });
+        });
     };
     ApplySurveyPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-apply-survey',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/'<!--\n\n  Generated template for the ModalTestPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title>Encuesta</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n<ion-content padding>\n\n    <ion-buttons end>\n\n      <button id="btndismiss" (click)="dismiss()" >X</button>\n\n    </ion-buttons>\n\n    <br> <br>\n\n    <h1>{{survey.name_poll}}</h1>\n\n\n\n    <div *ngFor="let q of questionsSurvey" id="\'formQuestion_{{q.poll_id}}_{{q.question_id}}">\n\n      <div *ngFor="let qa of questions">\n\n        <p *ngIf="q.question_id == qa.id" class="opcQ">{{qa.concept_quiestion}}</p>\n\n      </div>\n\n      <hr id="linequestion"><br>\n\n      <ion-list radio-group >\n\n        <div *ngFor="let opc of optionsQuestion">\n\n          <ion-item *ngIf="opc.question_id == q.question_id">\n\n            <ion-label>{{opc.description_opction}}</ion-label>\n\n            <ion-radio id="opc_{{opc.question_id}}" value="{{opc.question_id}}"></ion-radio>\n\n          </ion-item><br>\n\n        </div>\n\n      </ion-list>\n\n      <div id="sectionArrows" >\n\n          <h1>\n\n              <ion-icon id="hola" name="ios-arrow-dropleft-outline" (click)="navigateQuestion(q.poll_id , q.question_id , \'l\')"></ion-icon> &nbsp;\n\n              <ion-icon id="hola" name="ios-arrow-dropright-outline" (click)="navigateQuestion(q.poll_id , q.question_id , \'n\')"></ion-icon>\n\n          </h1> \n\n      </div>\n\n    </div><br>\n\n    <div id="counter" >\n\n        <ion-chip id="chipcountuner">\n\n            <ion-label>Pregunta {{numberQuestion}} de {{totalQuestions}}</ion-label>\n\n        </ion-chip>\n\n    </div>    \n\n    <div id="messageQuestion">\n\n      <p id="ptext">¿Sabias que? <br> Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo.</p>\n\n    </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/,
+            selector: 'page-apply-survey',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/'<!--\n\n  Generated template for the ModalTestPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title></ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content *ngIf="Available" padding>\n\n    <button ion-button small class="btndismiss" (click)="dismiss()" >X</button>\n\n    <br><br><br>\n\n    <h1>{{survey.name_poll}}</h1>\n\n    <div>\n\n      <div>\n\n        <p class="opcQ">{{step + 1}}. {{currQuestion.concept_quiestion}}</p>\n\n        <hr id="linequestion">\n\n        <ion-list radio-group [(ngModel)]="answers[currQuestion.id]">\n\n          <div *ngFor="let opc of currQuestion.options_question">\n\n            <ion-item>\n\n              <ion-label>{{opc.description_opction}}</ion-label>\n\n              <ion-radio  value="{{opc.id}}" (ionSelect)="checksFullfilled()"></ion-radio> \n\n            </ion-item>\n\n          </div>\n\n        </ion-list>\n\n      </div>\n\n    </div>\n\n      <button ion-button round small class="btns btnSend" *ngIf="surveyFilled" (click)="sendAnswers()">Enviar</button>\n\n    <div>\n\n    </div>  \n\n      <div id="sectionArrows" >\n\n          <h1>\n\n              <ion-icon id="hola" name="ios-arrow-dropleft-outline" (click)="navigateQuestion(-1)"></ion-icon> &nbsp;\n\n              <ion-icon id="hola" name="ios-arrow-dropright-outline" (click)="navigateQuestion(1)"></ion-icon>\n\n          </h1> \n\n      </div>    \n\n       \n\n    <div id="counter" >\n\n        <ion-chip id="chipcountuner">\n\n            <ion-label>Pregunta {{step + 1}} de {{totalQuestions}}</ion-label>\n\n        </ion-chip>\n\n    </div>   \n\n \n\n    <div id="messageQuestion">\n\n      <p id="ptext">¿Sabias que? <br> Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo.</p>\n\n    </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */], __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__providers_polls_polls__["a" /* PollsProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_polls_polls__["a" /* PollsProvider */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_5__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */]) === "function" && _g || Object])
     ], ApplySurveyPage);
     return ApplySurveyPage;
+    var _a, _b, _c, _d, _e, _f, _g;
 }());
 
 //# sourceMappingURL=apply-survey.js.map
 
 /***/ }),
 
-/***/ 106:
+/***/ 107:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ReportPollPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+/**
+ * Generated class for the ReportPollPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var ReportPollPage = /** @class */ (function () {
+    function ReportPollPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.type = navParams.get("type");
+        this.results = navParams.get("result");
+    }
+    ReportPollPage.prototype.ionViewDidLoad = function () {
+    };
+    ReportPollPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-report-poll',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\report-poll\report-poll.html"*/'<!--\n  Generated template for the ReportPollPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title></ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\report-poll\report-poll.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
+    ], ReportPollPage);
+    return ReportPollPage;
+}());
+
+//# sourceMappingURL=report-poll.js.map
+
+/***/ }),
+
+/***/ 108:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CommentForumPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_comments_forums_comments_forums__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_comments_forums_comments_forums__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_provider_users_provider_users__ = __webpack_require__(42);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -127,6 +210,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
 /**
  * Generated class for the CommentForumPage page.
  *
@@ -134,14 +219,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var CommentForumPage = /** @class */ (function () {
-    function CommentForumPage(navCtrl, navParams, provider) {
+    function CommentForumPage(navCtrl, navParams, provider, providerUser, loadingCtrl) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.provider = provider;
+        this.providerUser = providerUser;
+        this.loadingCtrl = loadingCtrl;
         this.forum = {};
         this.forum = navParams.get("forum");
         this.comments = [];
         this.commit = "";
+        this.loadUsers();
         this.loadComments();
     }
     CommentForumPage.prototype.ionViewDidLoad = function () {
@@ -157,20 +245,33 @@ var CommentForumPage = /** @class */ (function () {
         this.provider.postCommentsForum(json)
             .subscribe(function (data) {
             _this.comments.push(data);
+            _this.commit = "";
+        }, function (error) { console.log(error); });
+    };
+    CommentForumPage.prototype.loadUsers = function () {
+        var _this = this;
+        this.providerUser.getUsers(this.forum["id"])
+            .subscribe(function (data) {
+            _this.users = data;
         }, function (error) { console.log(error); });
     };
     CommentForumPage.prototype.loadComments = function () {
         var _this = this;
         this.provider.getCommentsForum(this.forum["id"])
             .subscribe(function (data) {
+            var loading = _this.loadingCtrl.create({
+                content: '<ion-spinner name="bubbles"></ion-spinner>Espere un momento por favor'
+            });
+            loading.present();
             _this.comments = data;
+            loading.dismiss();
         }, function (error) { console.log(error); });
     };
     CommentForumPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-comment-forum',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\comment-forum\comment-forum.html"*/'<!--\n  Generated template for the CommentForumPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-navbar>\n    <ion-title>Comentarios</ion-title>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n    <h3>{{forum.title_forum}}</h3><hr>\n    <h5>Objetivo</h5>\n    <p>{{forum.objective_forum}}</p><hr>\n    <ion-item class="">\n        <ion-icon class="commit" name="ios-create" item-start></ion-icon>\n        <ion-label floating>Comentario</ion-label>\n        <ion-textarea [(ngModel)]="commit" id="commit" name="commit"></ion-textarea>\n    </ion-item>\n    <ion-grid>\n      <ion-row>\n        <ion-col col-5></ion-col>\n        <ion-col col-7>\n          <button ion-button type="button" class="btns btnCommit" (click)="saveCommit()">Comentar</button>\n        </ion-col>\n      </ion-row>\n    </ion-grid>\n</ion-content>\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\comment-forum\comment-forum.html"*/,
+            selector: 'page-comment-forum',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\comment-forum\comment-forum.html"*/'<!--\n  Generated template for the CommentForumPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n  <ion-navbar>\n    <ion-title>Comentarios</ion-title>\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n    <h3 class="tittle">{{forum.title_forum}}</h3><hr>\n    <h5>Objetivo</h5>\n    <p>{{forum.objective_forum}}</p><hr>\n    <ion-item class="" >\n      <div *ngFor="let c of comments">\n        <ion-grid>\n          <ion-row>\n            <ion-col col-1>\n              <ion-icon class="iconComment" name="md-person"></ion-icon>\n            </ion-col>\n            <ion-col col-11>  \n              <div *ngFor="let u of users">\n                <p *ngIf="u.id == c.user_id"class="commentU">{{u.user_name}}</p>\n              </div>\n              <p class="comment"><ion-icon name="paper-plane"></ion-icon> {{c.comment_forum}}</p>\n            </ion-col>\n          </ion-row>\n        </ion-grid><hr>\n      </div>\n    </ion-item>\n    <ion-item class="">\n        <ion-icon class="commit" name="ios-create" item-start></ion-icon>\n        <ion-label floating>Comentario</ion-label>\n        <ion-textarea [(ngModel)]="commit" id="commit" name="commit"></ion-textarea>\n    </ion-item>\n    <ion-grid>\n      <ion-row>\n        <ion-col col-5></ion-col>\n        <ion-col col-7>\n          <button ion-button type="button" class="btns btnCommit" (click)="saveCommit()">Comentar</button>\n        </ion-col>\n      </ion-row>\n    </ion-grid>\n</ion-content>\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\comment-forum\comment-forum.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_comments_forums_comments_forums__["a" /* CommentsForumsProvider */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_comments_forums_comments_forums__["a" /* CommentsForumsProvider */], __WEBPACK_IMPORTED_MODULE_3__providers_provider_users_provider_users__["a" /* ProviderUsersProvider */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]])
     ], CommentForumPage);
     return CommentForumPage;
 }());
@@ -179,15 +280,15 @@ var CommentForumPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 107:
+/***/ 109:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ForumPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_forums_forums__ = __webpack_require__(169);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__comment_forum_comment_forum__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_forums_forums__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__comment_forum_comment_forum__ = __webpack_require__(108);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -243,118 +344,16 @@ var ForumPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 108:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MethodsPreventionsPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_methods_preventions_methods_preventions__ = __webpack_require__(170);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-/**
- * Generated class for the MethodsPreventionsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-var MethodsPreventionsPage = /** @class */ (function () {
-    function MethodsPreventionsPage(navCtrl, navParams, provider) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.provider = provider;
-        this.methods = [];
-        this.loadMethods();
-    }
-    MethodsPreventionsPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad MethodsPreventionsPage');
-    };
-    MethodsPreventionsPage.prototype.loadMethods = function () {
-        var _this = this;
-        this.provider.getMethodsPreventions()
-            .subscribe(function (data) {
-            _this.methods = data;
-        }, function (error) { console.log(error); });
-    };
-    MethodsPreventionsPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-methods-preventions',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\methods-preventions\methods-preventions.html"*/'<!--\n\n  Generated template for the MethodsPreventionsPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n  	<ion-navbar>\n\n		<button ion-button menuToggle class="burguer">\n\n	      <ion-icon name="menu"></ion-icon>\n\n	    </button>\n\n    	<ion-title>Metodos anticonceptivos</ion-title>\n\n  	</ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n	<div id="separator">\n\n      <h1>Metodos de prevención</h1>\n\n      <div>\n\n          <ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>\n\n          <ion-input id="search" type="text" placeholder="Buscar"></ion-input>\n\n      </div>\n\n    </div>\n\n    <hr>\n\n	<div *ngFor="let m of methods" id="learning" class="methodsDiv container">\n\n		<div class="boxes">\n\n			<img class="imgLearning" src="assets/imgs/riesgos.png">\n\n			<div>\n\n				<h4>{{m.name_method}}</h4>\n\n				<p class="contentMethod">{{m.description_method}}</p>\n\n				<h6>Duración</h6>\n\n				<p *ngIf="m.type_duration == 1">{{m.duration_method}} Horas</p>\n\n				<p *ngIf="m.type_duration == 2">{{m.duration_method}} Días</p>\n\n				<p *ngIf="m.type_duration == 3">{{m.duration_method}} Meses</p>\n\n				<p *ngIf="m.type_duration == 4">{{m.duration_method}} Años</p>\n\n				<h4>Recomendaciones:</h4>\n\n				<p >{{m.recommendations_method}}</p>\n\n			</div>\n\n		</div>\n\n	</div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\methods-preventions\methods-preventions.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_methods_preventions_methods_preventions__["a" /* MethodsPreventionsProvider */]])
-    ], MethodsPreventionsPage);
-    return MethodsPreventionsPage;
-}());
-
-//# sourceMappingURL=methods-preventions.js.map
-
-/***/ }),
-
-/***/ 109:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RatingsPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-/**
- * Generated class for the RatingsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-var RatingsPage = /** @class */ (function () {
-    function RatingsPage(navCtrl, navParams) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-    }
-    RatingsPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad RatingsPage');
-    };
-    RatingsPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-ratings',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\ratings\ratings.html"*/'<!--\n\n  Generated template for the RatingsPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n  	<button ion-button menuToggle class="burguer">\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    <ion-title>Calificacion</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\ratings\ratings.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
-    ], RatingsPage);
-    return RatingsPage;
-}());
-
-//# sourceMappingURL=ratings.js.map
-
-/***/ }),
-
 /***/ 110:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RegisterPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login_login__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_neighborhoods_neighborhoods__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_provider_users_provider_users__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login_login__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_neighborhoods_neighborhoods__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_provider_users_provider_users__ = __webpack_require__(42);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -472,12 +471,69 @@ var RegisterPage = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MethodsPreventionsPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_methods_preventions_methods_preventions__ = __webpack_require__(173);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+/**
+ * Generated class for the MethodsPreventionsPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var MethodsPreventionsPage = /** @class */ (function () {
+    function MethodsPreventionsPage(navCtrl, navParams, provider) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.provider = provider;
+        this.methods = [];
+        this.loadMethods();
+    }
+    MethodsPreventionsPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad MethodsPreventionsPage');
+    };
+    MethodsPreventionsPage.prototype.loadMethods = function () {
+        var _this = this;
+        this.provider.getMethodsPreventions()
+            .subscribe(function (data) {
+            _this.methods = data;
+        }, function (error) { console.log(error); });
+    };
+    MethodsPreventionsPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-methods-preventions',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\methods-preventions\methods-preventions.html"*/'<!--\n\n  Generated template for the MethodsPreventionsPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n  	<ion-navbar>\n\n		<button ion-button menuToggle class="burguer">\n\n	      <ion-icon name="menu"></ion-icon>\n\n	    </button>\n\n    	<ion-title>Metodos anticonceptivos</ion-title>\n\n  	</ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n	<div id="separator">\n\n      <h1>Metodos de prevención</h1>\n\n      <div>\n\n          <ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>\n\n          <ion-input id="search" type="text" placeholder="Buscar"></ion-input>\n\n      </div>\n\n    </div>\n\n    <hr>\n\n	<div *ngFor="let m of methods" id="learning" class="methodsDiv container">\n\n		<div class="boxes">\n\n			<img class="imgLearning" src="assets/imgs/riesgos.png">\n\n			<div>\n\n				<h4>{{m.name_method}}</h4>\n\n				<p class="contentMethod">{{m.description_method}}</p>\n\n				<h6>Duración</h6>\n\n				<p *ngIf="m.type_duration == 1">{{m.duration_method}} Horas</p>\n\n				<p *ngIf="m.type_duration == 2">{{m.duration_method}} Días</p>\n\n				<p *ngIf="m.type_duration == 3">{{m.duration_method}} Meses</p>\n\n				<p *ngIf="m.type_duration == 4">{{m.duration_method}} Años</p>\n\n				<h4>Recomendaciones:</h4>\n\n				<p >{{m.recommendations_method}}</p>\n\n			</div>\n\n		</div>\n\n	</div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\methods-preventions\methods-preventions.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_methods_preventions_methods_preventions__["a" /* MethodsPreventionsProvider */]])
+    ], MethodsPreventionsPage);
+    return MethodsPreventionsPage;
+}());
+
+//# sourceMappingURL=methods-preventions.js.map
+
+/***/ }),
+
+/***/ 112:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProfilePage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_principal_principal__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_neighborhoods_neighborhoods__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_provider_users_provider_users__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_principal_principal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_neighborhoods_neighborhoods__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_provider_users_provider_users__ = __webpack_require__(42);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -555,7 +611,7 @@ var ProfilePage = /** @class */ (function () {
     ProfilePage.prototype.loadData = function () {
         var _this = this;
         var id = localStorage.getItem("idU");
-        this.provider.getUsers(id)
+        this.provider.getUser(id)
             .subscribe(function (data) {
             _this.id = data["id"];
             _this.name = data["name"];
@@ -580,14 +636,59 @@ var ProfilePage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 112:
+/***/ 113:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RatingsPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+/**
+ * Generated class for the RatingsPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var RatingsPage = /** @class */ (function () {
+    function RatingsPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+    }
+    RatingsPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad RatingsPage');
+    };
+    RatingsPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-ratings',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\ratings\ratings.html"*/'<!--\n\n  Generated template for the RatingsPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n  	<button ion-button menuToggle class="burguer">\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    <ion-title>Calificacion</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\ratings\ratings.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
+    ], RatingsPage);
+    return RatingsPage;
+}());
+
+//# sourceMappingURL=ratings.js.map
+
+/***/ }),
+
+/***/ 114:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RisksPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_risks_risks__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_risks_risks__ = __webpack_require__(174);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -637,67 +738,7 @@ var RisksPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 113:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SurveysPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_apply_survey_apply_survey__ = __webpack_require__(105);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_apply_surveys_apply_surveys__ = __webpack_require__(81);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-/**
- * Generated class for the SurveysPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-var SurveysPage = /** @class */ (function () {
-    function SurveysPage(navCtrl, navParams, provider) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.provider = provider;
-        this.loadSurveys();
-    }
-    SurveysPage.prototype.loadSurveys = function () {
-        var _this = this;
-        this.provider.getSurveys()
-            .subscribe(function (data) {
-            _this.surveys = data;
-        }, function (error) { console.log(error); });
-    };
-    SurveysPage.prototype.openSurvey = function (s) {
-        this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_2__pages_apply_survey_apply_survey__["a" /* ApplySurveyPage */], {
-            survey: s,
-        });
-    };
-    SurveysPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-surveys',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\surveys\surveys.html"*/'<!--\n\n  Generated template for the SurveysPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n  	<button ion-button menuToggle class="burguer">\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    <ion-title>Encuestas</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n  <div id="separator">\n\n		<h1>Encuestas</h1>\n\n		<div>\n\n				<ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>\n\n				<ion-input id="search" type="text" placeholder="Buscar"></ion-input>\n\n		</div>\n\n	</div><hr>\n\n	<ion-list>\n\n		<button ion-item round class="listSurvey" *ngFor="let s of surveys" (click)="openSurvey(s)" title="{{s.name_poll}}">{{s.name_poll}}</button>\n\n	</ion-list>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\surveys\surveys.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */]])
-    ], SurveysPage);
-    return SurveysPage;
-}());
-
-//# sourceMappingURL=surveys.js.map
-
-/***/ }),
-
-/***/ 125:
+/***/ 126:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -710,56 +751,60 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 125;
+webpackEmptyAsyncContext.id = 126;
 
 /***/ }),
 
-/***/ 167:
+/***/ 168:
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
 	"../pages/apply-survey/apply-survey.module": [
-		300,
-		10
+		301,
+		11
 	],
 	"../pages/comment-forum/comment-forum.module": [
-		301,
-		9
+		302,
+		10
 	],
 	"../pages/forum/forum.module": [
-		302,
-		8
+		303,
+		9
 	],
 	"../pages/login/login.module": [
+		304,
+		8
+	],
+	"../pages/methods-preventions/methods-preventions.module": [
 		305,
 		7
 	],
-	"../pages/methods-preventions/methods-preventions.module": [
-		303,
-		6
-	],
 	"../pages/principal/principal.module": [
-		308,
-		5
+		306,
+		6
 	],
 	"../pages/profile/profile.module": [
 		307,
-		4
+		5
 	],
 	"../pages/ratings/ratings.module": [
-		304,
-		3
+		308,
+		4
 	],
 	"../pages/register/register.module": [
-		306,
+		309,
+		3
+	],
+	"../pages/report-poll/report-poll.module": [
+		310,
 		2
 	],
 	"../pages/risks/risks.module": [
-		309,
+		311,
 		1
 	],
 	"../pages/surveys/surveys.module": [
-		310,
+		312,
 		0
 	]
 };
@@ -774,17 +819,125 @@ function webpackAsyncContext(req) {
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
 	return Object.keys(map);
 };
-webpackAsyncContext.id = 167;
+webpackAsyncContext.id = 168;
 module.exports = webpackAsyncContext;
 
 /***/ }),
 
-/***/ 168:
+/***/ 169:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PollsProvider; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+/*
+  Generated class for the PollsProvider provider.
+
+  See https://angular.io/guide/dependency-injection for more info on providers
+  and Angular DI.
+*/
+var PollsProvider = /** @class */ (function () {
+    function PollsProvider(http) {
+        this.http = http;
+        this.baseUrl = "https://preve-ya.herokuapp.com";
+        this.jwt = localStorage.getItem("jwt");
+        this.headers = new __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["c" /* HttpHeaders */]({
+            'Content-type': 'application/json',
+            'Authorization': 'Bearer ' + this.jwt
+        });
+    }
+    PollsProvider.prototype.getPool = function (id) {
+        var options = { headers: this.headers };
+        console.warn('options >>', options);
+        return this.http.get(this.baseUrl + '/polls/' + id, options);
+    };
+    PollsProvider = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */]])
+    ], PollsProvider);
+    return PollsProvider;
+}());
+
+//# sourceMappingURL=polls.js.map
+
+/***/ }),
+
+/***/ 170:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ResultSurveysProvider; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+/*
+  Generated class for the ResultSurveysProvider provider.
+
+  See https://angular.io/guide/dependency-injection for more info on providers
+  and Angular DI.
+*/
+var ResultSurveysProvider = /** @class */ (function () {
+    function ResultSurveysProvider(http) {
+        this.http = http;
+        this.baseUrl = "https://preve-ya.herokuapp.com";
+    }
+    ResultSurveysProvider.prototype.saveApplyPoll = function () {
+        var jwt = localStorage.getItem("jwt");
+        var headers = new __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["c" /* HttpHeaders */]({
+            'Content-Type': 'application/json'
+        });
+        var options = { headers: headers };
+        return this.http.post(this.baseUrl + '/apply_surveys', json, options);
+    };
+    ResultSurveysProvider.prototype.saveAnswersPoll = function () {
+        var jwt = localStorage.getItem("jwt");
+        var headers = new __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["c" /* HttpHeaders */]({
+            'Content-Type': 'application/json'
+        });
+        var options = { headers: headers };
+        return this.http.post(this.baseUrl + '/result_surveys', json, options);
+    };
+    ResultSurveysProvider = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */]])
+    ], ResultSurveysProvider);
+    return ResultSurveysProvider;
+}());
+
+//# sourceMappingURL=result-surveys.js.map
+
+/***/ }),
+
+/***/ 171:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CommentsForumsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -816,7 +969,7 @@ var CommentsForumsProvider = /** @class */ (function () {
             'Authorization': 'Bearer ' + jwt
         });
         var options = { headers: headers };
-        return this.http.get(this.baseUrl + '/comments_forums/' + id, options);
+        return this.http.get(this.baseUrl + '/commetsForum/' + id, options);
     };
     CommentsForumsProvider.prototype.postCommentsForum = function (json) {
         var jwt = localStorage.getItem("jwt");
@@ -837,12 +990,12 @@ var CommentsForumsProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 169:
+/***/ 172:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ForumsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -887,12 +1040,12 @@ var ForumsProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 170:
+/***/ 173:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MethodsPreventionsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -954,12 +1107,12 @@ var MethodsPreventionsProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 171:
+/***/ 174:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RisksProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1021,13 +1174,13 @@ var RisksProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 215:
+/***/ 218:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ItemDetailsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1059,13 +1212,13 @@ var ItemDetailsPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 216:
+/***/ 219:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(220);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(240);
 
 
 Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
@@ -1073,45 +1226,46 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 /***/ }),
 
-/***/ 237:
+/***/ 240:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(284);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_common_http__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_hello_ionic_hello_ionic__ = __webpack_require__(292);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_item_details_item_details__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_login_login__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_list_list__ = __webpack_require__(293);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__(287);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_common_http__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_hello_ionic_hello_ionic__ = __webpack_require__(295);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_item_details_item_details__ = __webpack_require__(218);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_login_login__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_list_list__ = __webpack_require__(296);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_register_register__ = __webpack_require__(110);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_principal_principal__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_profile_profile__ = __webpack_require__(111);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_risks_risks__ = __webpack_require__(112);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_methods_preventions_methods_preventions__ = __webpack_require__(108);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_forum_forum__ = __webpack_require__(107);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pages_comment_forum_comment_forum__ = __webpack_require__(106);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pages_apply_survey_apply_survey__ = __webpack_require__(105);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__providers_provider_users_provider_users__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__ionic_native_status_bar__ = __webpack_require__(211);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__ionic_native_splash_screen__ = __webpack_require__(214);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__providers_locations_locations__ = __webpack_require__(294);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__providers_neighborhoods_neighborhoods__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__providers_risks_risks__ = __webpack_require__(171);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__providers_methods_preventions_methods_preventions__ = __webpack_require__(170);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__providers_polls_polls__ = __webpack_require__(295);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__providers_questions_questions__ = __webpack_require__(296);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__providers_options_questions_options_questions__ = __webpack_require__(297);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__providers_ratings_ratings__ = __webpack_require__(298);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__providers_result_surveys_result_surveys__ = __webpack_require__(299);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__providers_apply_surveys_apply_surveys__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__providers_forums_forums__ = __webpack_require__(169);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__providers_comments_forums_comments_forums__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__pages_ratings_ratings__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__pages_surveys_surveys__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_principal_principal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_profile_profile__ = __webpack_require__(112);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_risks_risks__ = __webpack_require__(114);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_methods_preventions_methods_preventions__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_forum_forum__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pages_comment_forum_comment_forum__ = __webpack_require__(108);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pages_apply_survey_apply_survey__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_report_poll_report_poll__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__providers_provider_users_provider_users__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__ionic_native_status_bar__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__ionic_native_splash_screen__ = __webpack_require__(217);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__providers_locations_locations__ = __webpack_require__(297);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__providers_neighborhoods_neighborhoods__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__providers_risks_risks__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__providers_methods_preventions_methods_preventions__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__providers_polls_polls__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__providers_questions_questions__ = __webpack_require__(298);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__providers_options_questions_options_questions__ = __webpack_require__(299);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__providers_ratings_ratings__ = __webpack_require__(300);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__providers_result_surveys_result_surveys__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_30__providers_apply_surveys_apply_surveys__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_31__providers_forums_forums__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_32__providers_comments_forums_comments_forums__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_33__pages_ratings_ratings__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_34__pages_surveys_surveys__ = __webpack_require__(53);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1125,6 +1279,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 /*************************************COMPONENTES**************************/
+
 
 
 
@@ -1172,10 +1327,11 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_12__pages_risks_risks__["a" /* RisksPage */],
                 __WEBPACK_IMPORTED_MODULE_13__pages_methods_preventions_methods_preventions__["a" /* MethodsPreventionsPage */],
                 __WEBPACK_IMPORTED_MODULE_14__pages_forum_forum__["a" /* ForumPage */],
-                __WEBPACK_IMPORTED_MODULE_32__pages_ratings_ratings__["a" /* RatingsPage */],
-                __WEBPACK_IMPORTED_MODULE_33__pages_surveys_surveys__["a" /* SurveysPage */],
+                __WEBPACK_IMPORTED_MODULE_33__pages_ratings_ratings__["a" /* RatingsPage */],
+                __WEBPACK_IMPORTED_MODULE_34__pages_surveys_surveys__["a" /* SurveysPage */],
                 __WEBPACK_IMPORTED_MODULE_15__pages_comment_forum_comment_forum__["a" /* CommentForumPage */],
-                __WEBPACK_IMPORTED_MODULE_16__pages_apply_survey_apply_survey__["a" /* ApplySurveyPage */]
+                __WEBPACK_IMPORTED_MODULE_16__pages_apply_survey_apply_survey__["a" /* ApplySurveyPage */],
+                __WEBPACK_IMPORTED_MODULE_17__pages_report_poll_report_poll__["a" /* ReportPollPage */]
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -1185,12 +1341,13 @@ var AppModule = /** @class */ (function () {
                         { loadChildren: '../pages/apply-survey/apply-survey.module#ApplySurveyPageModule', name: 'ApplySurveyPage', segment: 'apply-survey', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/comment-forum/comment-forum.module#CommentForumPageModule', name: 'CommentForumPage', segment: 'comment-forum', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/forum/forum.module#ForumPageModule', name: 'ForumPage', segment: 'forum', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/methods-preventions/methods-preventions.module#MethodsPreventionsPageModule', name: 'MethodsPreventionsPage', segment: 'methods-preventions', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/ratings/ratings.module#RatingsPageModule', name: 'RatingsPage', segment: 'ratings', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/login/login.module#LoginPageModule', name: 'LoginPage', segment: 'login', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/register/register.module#RegisterPageModule', name: 'RegisterPage', segment: 'register', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/profile/profile.module#ProfilePageModule', name: 'ProfilePage', segment: 'profile', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/methods-preventions/methods-preventions.module#MethodsPreventionsPageModule', name: 'MethodsPreventionsPage', segment: 'methods-preventions', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/principal/principal.module#PrincipalPageModule', name: 'PrincipalPage', segment: 'principal', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/profile/profile.module#ProfilePageModule', name: 'ProfilePage', segment: 'profile', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/ratings/ratings.module#RatingsPageModule', name: 'RatingsPage', segment: 'ratings', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/register/register.module#RegisterPageModule', name: 'RegisterPage', segment: 'register', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/report-poll/report-poll.module#ReportPollPageModule', name: 'ReportPollPage', segment: 'report-poll', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/risks/risks.module#RisksPageModule', name: 'RisksPage', segment: 'risks', priority: 'low', defaultHistory: [] },
                         { loadChildren: '../pages/surveys/surveys.module#SurveysPageModule', name: 'SurveysPage', segment: 'surveys', priority: 'low', defaultHistory: [] }
                     ]
@@ -1209,28 +1366,29 @@ var AppModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_12__pages_risks_risks__["a" /* RisksPage */],
                 __WEBPACK_IMPORTED_MODULE_13__pages_methods_preventions_methods_preventions__["a" /* MethodsPreventionsPage */],
                 __WEBPACK_IMPORTED_MODULE_14__pages_forum_forum__["a" /* ForumPage */],
-                __WEBPACK_IMPORTED_MODULE_32__pages_ratings_ratings__["a" /* RatingsPage */],
-                __WEBPACK_IMPORTED_MODULE_33__pages_surveys_surveys__["a" /* SurveysPage */],
+                __WEBPACK_IMPORTED_MODULE_33__pages_ratings_ratings__["a" /* RatingsPage */],
+                __WEBPACK_IMPORTED_MODULE_34__pages_surveys_surveys__["a" /* SurveysPage */],
                 __WEBPACK_IMPORTED_MODULE_15__pages_comment_forum_comment_forum__["a" /* CommentForumPage */],
-                __WEBPACK_IMPORTED_MODULE_16__pages_apply_survey_apply_survey__["a" /* ApplySurveyPage */]
+                __WEBPACK_IMPORTED_MODULE_16__pages_apply_survey_apply_survey__["a" /* ApplySurveyPage */],
+                __WEBPACK_IMPORTED_MODULE_17__pages_report_poll_report_poll__["a" /* ReportPollPage */]
             ],
             providers: [
-                __WEBPACK_IMPORTED_MODULE_18__ionic_native_status_bar__["a" /* StatusBar */],
-                __WEBPACK_IMPORTED_MODULE_19__ionic_native_splash_screen__["a" /* SplashScreen */],
+                __WEBPACK_IMPORTED_MODULE_19__ionic_native_status_bar__["a" /* StatusBar */],
+                __WEBPACK_IMPORTED_MODULE_20__ionic_native_splash_screen__["a" /* SplashScreen */],
                 { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicErrorHandler */] },
-                __WEBPACK_IMPORTED_MODULE_17__providers_provider_users_provider_users__["a" /* ProviderUsersProvider */],
-                __WEBPACK_IMPORTED_MODULE_20__providers_locations_locations__["a" /* LocationsProvider */],
-                __WEBPACK_IMPORTED_MODULE_21__providers_neighborhoods_neighborhoods__["a" /* NeighborhoodsProvider */],
-                __WEBPACK_IMPORTED_MODULE_22__providers_risks_risks__["a" /* RisksProvider */],
-                __WEBPACK_IMPORTED_MODULE_23__providers_methods_preventions_methods_preventions__["a" /* MethodsPreventionsProvider */],
-                __WEBPACK_IMPORTED_MODULE_24__providers_polls_polls__["a" /* PollsProvider */],
-                __WEBPACK_IMPORTED_MODULE_25__providers_questions_questions__["a" /* QuestionsProvider */],
-                __WEBPACK_IMPORTED_MODULE_26__providers_options_questions_options_questions__["a" /* OptionsQuestionsProvider */],
-                __WEBPACK_IMPORTED_MODULE_27__providers_ratings_ratings__["a" /* RatingsProvider */],
-                __WEBPACK_IMPORTED_MODULE_28__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */],
-                __WEBPACK_IMPORTED_MODULE_29__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */],
-                __WEBPACK_IMPORTED_MODULE_30__providers_forums_forums__["a" /* ForumsProvider */],
-                __WEBPACK_IMPORTED_MODULE_31__providers_comments_forums_comments_forums__["a" /* CommentsForumsProvider */]
+                __WEBPACK_IMPORTED_MODULE_18__providers_provider_users_provider_users__["a" /* ProviderUsersProvider */],
+                __WEBPACK_IMPORTED_MODULE_21__providers_locations_locations__["a" /* LocationsProvider */],
+                __WEBPACK_IMPORTED_MODULE_22__providers_neighborhoods_neighborhoods__["a" /* NeighborhoodsProvider */],
+                __WEBPACK_IMPORTED_MODULE_23__providers_risks_risks__["a" /* RisksProvider */],
+                __WEBPACK_IMPORTED_MODULE_24__providers_methods_preventions_methods_preventions__["a" /* MethodsPreventionsProvider */],
+                __WEBPACK_IMPORTED_MODULE_25__providers_polls_polls__["a" /* PollsProvider */],
+                __WEBPACK_IMPORTED_MODULE_26__providers_questions_questions__["a" /* QuestionsProvider */],
+                __WEBPACK_IMPORTED_MODULE_27__providers_options_questions_options_questions__["a" /* OptionsQuestionsProvider */],
+                __WEBPACK_IMPORTED_MODULE_28__providers_ratings_ratings__["a" /* RatingsProvider */],
+                __WEBPACK_IMPORTED_MODULE_29__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */],
+                __WEBPACK_IMPORTED_MODULE_30__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */],
+                __WEBPACK_IMPORTED_MODULE_31__providers_forums_forums__["a" /* ForumsProvider */],
+                __WEBPACK_IMPORTED_MODULE_32__providers_comments_forums_comments_forums__["a" /* CommentsForumsProvider */]
             ]
         })
     ], AppModule);
@@ -1241,23 +1399,23 @@ var AppModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 284:
+/***/ 287:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_login_login__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_principal_principal__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_profile_profile__ = __webpack_require__(111);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_risks_risks__ = __webpack_require__(112);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_methods_preventions_methods_preventions__ = __webpack_require__(108);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_forum_forum__ = __webpack_require__(107);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ratings_ratings__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_surveys_surveys__ = __webpack_require__(113);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ionic_native_status_bar__ = __webpack_require__(211);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ionic_native_splash_screen__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_login_login__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_principal_principal__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_profile_profile__ = __webpack_require__(112);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_risks_risks__ = __webpack_require__(114);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_methods_preventions_methods_preventions__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_forum_forum__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ratings_ratings__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_surveys_surveys__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ionic_native_status_bar__ = __webpack_require__(214);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ionic_native_splash_screen__ = __webpack_require__(217);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1343,7 +1501,7 @@ var MyApp = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 292:
+/***/ 295:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1375,14 +1533,14 @@ var HelloIonicPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 293:
+/***/ 296:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ListPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__item_details_item_details__ = __webpack_require__(215);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__item_details_item_details__ = __webpack_require__(218);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1428,12 +1586,12 @@ var ListPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 294:
+/***/ 297:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LocationsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1495,53 +1653,12 @@ var LocationsProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 295:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PollsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-/*
-  Generated class for the PollsProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
-var PollsProvider = /** @class */ (function () {
-    function PollsProvider(http) {
-        this.http = http;
-        this.baseUrl = "https://preve-ya.herokuapp.com";
-        console.log('Hello PollsProvider Provider');
-    }
-    PollsProvider = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */]])
-    ], PollsProvider);
-    return PollsProvider;
-}());
-
-//# sourceMappingURL=polls.js.map
-
-/***/ }),
-
-/***/ 296:
+/***/ 298:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return QuestionsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1577,12 +1694,12 @@ var QuestionsProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 297:
+/***/ 299:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return OptionsQuestionsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1618,12 +1735,12 @@ var OptionsQuestionsProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 298:
+/***/ 300:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RatingsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1659,115 +1776,13 @@ var RatingsProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 299:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ResultSurveysProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-/*
-  Generated class for the ResultSurveysProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
-var ResultSurveysProvider = /** @class */ (function () {
-    function ResultSurveysProvider(http) {
-        this.http = http;
-        this.baseUrl = "https://preve-ya.herokuapp.com";
-        console.log('Hello ResultSurveysProvider Provider');
-    }
-    ResultSurveysProvider = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */]])
-    ], ResultSurveysProvider);
-    return ResultSurveysProvider;
-}());
-
-//# sourceMappingURL=result-surveys.js.map
-
-/***/ }),
-
 /***/ 42:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PrincipalPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-/**
- * Generated class for the PrincipalPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-var PrincipalPage = /** @class */ (function () {
-    function PrincipalPage(navCtrl, navParams) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.slides = [
-            {
-                title: "Riesgos?",
-                description: "<b>Detalle</b> aqui van los riesgos khzcgvejnf smcmb bdsbc,  aadgkdxxhbw.cf ,jdgs...<br><a href='#'>Leer más</a>",
-                image: "assets/imgs/riesgos.png",
-            },
-            {
-                title: "Metodos",
-                description: "<b>Anticonceptivos</b> aqui van los metodos jasdiuscbukf jdghscisnd z,djgwsjnbc xjkesdnbv  j,wdgefd...<br><a href='#'>Leer más</a>",
-                image: "assets/imgs/metodosa.png",
-            },
-            {
-                title: "Causas",
-                description: "The <b>Cuales</b> Causas por las cuales se dan los embarazos.<br><a href='#'>Leer más</a>",
-                image: "assets/imgs/metodosa.png",
-            }
-        ];
-    }
-    PrincipalPage.prototype.ionViewDidLoad = function () {
-    };
-    PrincipalPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-principal',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\principal\principal.html"*/'<ion-header>\n\n  <ion-navbar class="pf">\n\n    <button ion-button menuToggle class="burguer">\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    </ion-navbar>\n\n  </ion-header>\n\n  <ion-content padding class="containerPrin tutorial-page grid-basic-page">\n\n    <div id="separator">\n\n      <h1>Bienvenido a Prevé Ya</h1>\n\n      <div>\n\n          <ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>\n\n          <ion-input id="search" type="text" placeholder="Buscar"></ion-input>\n\n      </div>\n\n    </div>\n\n    <hr>\n\n    <ion-slides pager>\n\n      <ion-slide *ngFor="let slide of slides">\n\n        <img [src]="slide.image" class="slide-image"/>\n\n        <h2 class="slide-title" [innerHTML]="slide.title"></h2>\n\n        <p [innerHTML]="slide.description"></p>\n\n      </ion-slide>\n\n    </ion-slides>\n\n    <!--div id="learning" class="container">\n\n    <div class="container">\n\n      <div id="div1">\n\n        <div class="boxes">\n\n          <img class="imgLearning" src="assets/imgs/riesgos.png">\n\n          <div>\n\n            <h4>riesgos</h4>\n\n            <p>aqui van los riesgos khzcgvejnf smcmb bdsbc, <br>  aadgkdxxhbw.cf ,jdgs...</p>\n\n            <a href="#">Leer más</a>\n\n          </div>\n\n        </div>\n\n      </div>\n\n      <div id="div2">\n\n        <div class="boxes">\n\n          <img class="imgLearning" src="assets/imgs/metodosa.png">\n\n          <div>\n\n            <h4>Metodos anticonveptivos</h4>\n\n            <p>aqui van los metodos jasdiuscbukf jdghscisnd <br> z,djgwsjnbc xjkesdnbv  j,wdgefd...</p>\n\n            <a href="#">Leer más</a>\n\n          </div>\n\n        </div>\n\n      </div>\n\n      <div id="div3">\n\n        <div class="boxes">\n\n            <img class="imgLearning" src="assets/imgs/metodosa.png">\n\n            <div>\n\n              <h4>Causas</h4>\n\n              <p>aqui van los metodos jasdiuscbukf jdghscisnd  <br>z,djgwsjnbc xjkesdnbv  j,wdgefd...</p>\n\n              <a href="#">Leer más</a>\n\n            </div>\n\n          </div>\n\n      </div>    \n\n    </div>\n\n    </div-->\n\n    <hr>\n\n    <ion-grid>\n\n      <ion-row>\n\n        <ion-col col-1></ion-col>\n\n        <ion-col col-10>\n\n          <button ion-button class="btns">Test de Probabilidad</button>\n\n        </ion-col>\n\n        <ion-col col-1></ion-col>\n\n      </ion-row>\n\n    </ion-grid>\n\n  </ion-content>'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\principal\principal.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
-    ], PrincipalPage);
-    return PrincipalPage;
-}());
-
-//# sourceMappingURL=principal.js.map
-
-/***/ }),
-
-/***/ 48:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export Group */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProviderUsersProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1809,7 +1824,17 @@ var ProviderUsersProvider = /** @class */ (function () {
         var optionsSignIn = { headers: headersSign };
         return this.http.get(this.baseUrl + '/signIn/' + email, optionsSignIn);
     };
-    ProviderUsersProvider.prototype.getUsers = function (id) {
+    ProviderUsersProvider.prototype.getUsers = function () {
+        var jwt = localStorage.getItem("jwt");
+        var headersGet = new __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["c" /* HttpHeaders */]({
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwt
+        });
+        var optionsGet = { headers: headersGet };
+        var apiUrl = localStorage.getItem("apiUrl");
+        return this.http.get(this.baseUrl + '/users', optionsGet);
+    };
+    ProviderUsersProvider.prototype.getUser = function (id) {
         var jwt = localStorage.getItem("jwt");
         var headersGet = new __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["c" /* HttpHeaders */]({
             'Content-Type': 'application/json',
@@ -1856,15 +1881,136 @@ var ProviderUsersProvider = /** @class */ (function () {
 
 /***/ }),
 
+/***/ 43:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PrincipalPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+/**
+ * Generated class for the PrincipalPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var PrincipalPage = /** @class */ (function () {
+    function PrincipalPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.slides = [
+            {
+                title: "Riesgos?",
+                description: "<b>Detalle</b> Infección en el embarazo...<br><a href='#'>Leer más</a>",
+                image: "assets/imgs/riesgos.png",
+            },
+            {
+                title: "Metodos",
+                description: "<b>Anticonceptivos</b> aqui van los metodos jasdiuscbukf jdghscisnd z,djgwsjnbc xjkesdnbv  j,wdgefd...<br><a href='#'>Leer más</a>",
+                image: "assets/imgs/metodosa.png",
+            },
+            {
+                title: "Causas",
+                description: "The <b>Cuales</b> Causas por las cuales se dan los embarazos.<br><a href='#'>Leer más</a>",
+                image: "assets/imgs/metodosa.png",
+            }
+        ];
+    }
+    PrincipalPage.prototype.ionViewDidLoad = function () {
+    };
+    PrincipalPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-principal',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\principal\principal.html"*/'<ion-header>\n\n  <ion-navbar class="pf">\n\n    <button ion-button menuToggle class="burguer">\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    </ion-navbar>\n\n  </ion-header>\n\n  <ion-content padding class="containerPrin tutorial-page grid-basic-page">\n\n    <div id="separator">\n\n      <h1>Bienvenido a Prevé Ya</h1>\n\n      <div>\n\n          <ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>\n\n          <ion-input id="search" type="text" placeholder="Buscar"></ion-input>\n\n      </div>\n\n    </div>\n\n    <hr>\n\n    <ion-slides pager>\n\n      <ion-slide *ngFor="let slide of slides">\n\n        <img [src]="slide.image" class="slide-image"/>\n\n        <h2 class="slide-title" [innerHTML]="slide.title"></h2>\n\n        <p [innerHTML]="slide.description"></p>\n\n      </ion-slide>\n\n    </ion-slides>\n\n    <!--div id="learning" class="container">\n\n    <div class="container">\n\n      <div id="div1">\n\n        <div class="boxes">\n\n          <img class="imgLearning" src="assets/imgs/riesgos.png">\n\n          <div>\n\n            <h4>riesgos</h4>\n\n            <p>aqui van los riesgos khzcgvejnf smcmb bdsbc, <br>  aadgkdxxhbw.cf ,jdgs...</p>\n\n            <a href="#">Leer más</a>\n\n          </div>\n\n        </div>\n\n      </div>\n\n      <div id="div2">\n\n        <div class="boxes">\n\n          <img class="imgLearning" src="assets/imgs/metodosa.png">\n\n          <div>\n\n            <h4>Metodos anticonveptivos</h4>\n\n            <p>aqui van los metodos jasdiuscbukf jdghscisnd <br> z,djgwsjnbc xjkesdnbv  j,wdgefd...</p>\n\n            <a href="#">Leer más</a>\n\n          </div>\n\n        </div>\n\n      </div>\n\n      <div id="div3">\n\n        <div class="boxes">\n\n            <img class="imgLearning" src="assets/imgs/metodosa.png">\n\n            <div>\n\n              <h4>Causas</h4>\n\n              <p>aqui van los metodos jasdiuscbukf jdghscisnd  <br>z,djgwsjnbc xjkesdnbv  j,wdgefd...</p>\n\n              <a href="#">Leer más</a>\n\n            </div>\n\n          </div>\n\n      </div>    \n\n    </div>\n\n    </div-->\n\n    <hr>\n\n    <ion-grid>\n\n      <ion-row>\n\n        <ion-col col-1></ion-col>\n\n        <ion-col col-10>\n\n          <button ion-button class="btns">Test de Probabilidad</button>\n\n        </ion-col>\n\n        <ion-col col-1></ion-col>\n\n      </ion-row>\n\n    </ion-grid>\n\n  </ion-content>'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\principal\principal.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
+    ], PrincipalPage);
+    return PrincipalPage;
+}());
+
+//# sourceMappingURL=principal.js.map
+
+/***/ }),
+
 /***/ 53:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SurveysPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_apply_survey_apply_survey__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_apply_surveys_apply_surveys__ = __webpack_require__(82);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+/**
+ * Generated class for the SurveysPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var SurveysPage = /** @class */ (function () {
+    function SurveysPage(navCtrl, navParams, provider) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.provider = provider;
+        this.loadSurveys();
+    }
+    SurveysPage.prototype.loadSurveys = function () {
+        var _this = this;
+        this.provider.getSurveys()
+            .subscribe(function (data) {
+            _this.surveys = data;
+        }, function (error) { console.log(error); });
+    };
+    SurveysPage.prototype.openSurvey = function (s) {
+        this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_2__pages_apply_survey_apply_survey__["a" /* ApplySurveyPage */], {
+            survey: s,
+        });
+    };
+    SurveysPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-surveys',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\surveys\surveys.html"*/'<!--\n\n  Generated template for the SurveysPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n  	<button ion-button menuToggle class="burguer">\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    <ion-title>Encuestas</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n  <div id="separator">\n\n		<h1>Encuestas</h1>\n\n		<div>\n\n				<ion-icon id="iconS" class="icon-search" name="md-search"></ion-icon>\n\n				<ion-input id="search" type="text" placeholder="Buscar"></ion-input>\n\n		</div>\n\n	</div><hr>\n\n	<ion-list>\n\n		<button ion-item round class="listSurvey" *ngFor="let s of surveys" (click)="openSurvey(s)" title="{{s.name_poll}}">{{s.name_poll}}</button>\n\n	</ion-list>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\surveys\surveys.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */]])
+    ], SurveysPage);
+    return SurveysPage;
+}());
+
+//# sourceMappingURL=surveys.js.map
+
+/***/ }),
+
+/***/ 54:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_provider_users_provider_users__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_principal_principal__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_provider_users_provider_users__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_principal_principal__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_register_register__ = __webpack_require__(110);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1972,12 +2118,12 @@ var LoginPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 81:
+/***/ 82:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ApplySurveysProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2059,12 +2205,12 @@ var ApplySurveysProvider = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 82:
+/***/ 83:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NeighborhoodsProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_common_http__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2127,5 +2273,5 @@ var NeighborhoodsProvider = /** @class */ (function () {
 
 /***/ })
 
-},[216]);
+},[219]);
 //# sourceMappingURL=main.js.map

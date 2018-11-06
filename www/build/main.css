@@ -25692,12 +25692,17 @@ ion-navbar.toolbar {
   background: #b35db6;
 }
 
-#btndismiss {
-  background: #920E0E;
+.btndismiss {
+  background: #b35db6;
   border-radius: 360px;
   float: right;
   width: 30px;
   height: 20px;
+  margin-top: 39px;
+}
+
+.btnSend {
+  margin-top: -18px !important;
 }
 
 h1 {
@@ -25706,6 +25711,7 @@ h1 {
 
 #hola {
   color: #4D9368;
+  cusor: pointer;
 }
 
 .opcQ {
@@ -25742,6 +25748,24 @@ h1 {
 
 .btnCommit {
   margin-left: 13px;
+}
+
+.comment {
+  color: black !important;
+  margin-left: 30px !important;
+}
+
+.commentU {
+  color: black !important;
+  font-size: 16px !important;
+}
+
+.iconComment {
+  font-size: 28px !important;
+}
+
+.tittle {
+  text-align: center !important;
 }
 
 .listForum {
