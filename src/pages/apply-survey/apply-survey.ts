@@ -123,6 +123,7 @@ export class ApplySurveyPage {
           if(data){
             this.navCtrl.setRoot(ReportPollPage, {
               type: this.survey.type_poll,
+              result: data 
             });
           }
         },
