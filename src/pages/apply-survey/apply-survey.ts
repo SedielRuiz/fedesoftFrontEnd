@@ -27,6 +27,8 @@ export class ApplySurveyPage {
   survey:any
   totalQuestions:number
   numQ:number
+  note: any
+  notes: any
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -41,8 +43,32 @@ export class ApplySurveyPage {
     this.survey = navParams.get("survey");    
     this.answers={};    
     this.loadPoll();
+    this.notes = [
+      {
+        "title":"¿Sabias que?",
+        "body":"Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo."
+      },
+      {
+        "title":"¿Sabes cuáles son los métodos anticonceptivos y su eficacia?" ,
+        "body":"Consúltalo en nuestra página de Métodos anticonceptivos. No te quedes con la duda."
+      },
+      {
+        "title":"Fertilidad" ,
+        "body":"Recuerda que puedes crear tu calendario de fertilidad."
+      },
+      {
+        "title":"Recuerda" ,
+        "body":"No olvides consultar con tu médico, y realizar exámenes de rutina."
+      },
+    ];
+    this.noteRandom()
   }
   /****************************CARGAR ENCUESTA***************************/
+  noteRandom(){
+    let num = this.notes.length;
+    let random=Math.floor(Math.random()*num);
+    this.note = this.notes[random];
+  }
   loadPoll() {
     this.pollProvider.getPool(this.survey.id)
     .subscribe(
@@ -52,6 +78,8 @@ export class ApplySurveyPage {
         });
         loading.present();
         this.survey = data;
+        //this.survey.questions.splice(3, 0);
+        delete this.survey.questions[3];
         this.currQuestion = this.survey.questions[0];
         this.step = 0;
         this.totalQuestions = this.survey.questions.length;
@@ -63,7 +91,7 @@ export class ApplySurveyPage {
   /*************************FIN CARGAR ENCUESTA***************************/
   /**************NAVEGAR ENTRE PREGUNTAS*************/
   navigateQuestion(step) {
-
+    this.noteRandom()
     if(this.step + step < 0) {    
       return;
     }
@@ -72,12 +100,19 @@ export class ApplySurveyPage {
       return;
     }
 
-    this.step += step;    
-    this.currQuestion = this.survey.questions[this.step];                
+    this.step += step;   
+    if(this.step==3 ){
+      if(step == 1){
+        this.step+=1;
+      }else if(step == -1){
+        this.step-=1;
+      }
+    }
+    this.currQuestion = this.survey.questions[this.step];
   }
 
   checksFullfilled() {    
-    if(Object.keys(this.answers).length == this.totalQuestions) {
+    if(Object.keys(this.answers).length == this.totalQuestions-1) {
       this.surveyFilled = 1;
     }    
   }
@@ -90,6 +125,7 @@ export class ApplySurveyPage {
     console.log(this.answers)
     let id=localStorage.getItem("idU");
     let json = {
+      "number_attemps":0,
       "user_id":id,
       "poll_id":this.survey.id
     }
@@ -97,27 +133,27 @@ export class ApplySurveyPage {
     .subscribe(
       (data)=>{
         if(data){
-          this.loadAnswers(data.id)
+          this.loadAnswers(data)
         }
       },
       (error)=>{console.log(error);}
     );
   }
-  loadAnswers(id){
+  loadAnswers(data){
     let arr =[];
     this.survey.questions.forEach(item => {
       arr.push({
-        "answer": answers[item.id],
+        "answer": this.answers[item.id],
         "poll_id": this.survey.id,
         "question_id": item.id,
-        "apply_survey_id": id
+        "apply_survey_id": data.id
       })
     });
     this.sendAnswers(arr)
   }
   sendAnswers(arr){
-    arr.forEach(element => {  
-      this.providerResult.saveAnswersPoll(json)
+    arr.forEach(item => {  
+      this.providerResult.saveAnswersPoll(item)
       .subscribe(
         (data)=>{
           if(data){

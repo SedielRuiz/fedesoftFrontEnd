@@ -49,8 +49,32 @@ var ApplySurveyPage = /** @class */ (function () {
         this.survey = navParams.get("survey");
         this.answers = {};
         this.loadPoll();
+        this.notes = [
+            {
+                "title": "¿Sabias que?",
+                "body": "Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo."
+            },
+            {
+                "title": "¿Sabes cuáles son los métodos anticonceptivos y su eficacia?",
+                "body": "Consúltalo en nuestra página de Métodos anticonceptivos. No te quedes con la duda."
+            },
+            {
+                "title": "Fertilidad",
+                "body": "Recuerda que puedes crear tu calendario de fertilidad."
+            },
+            {
+                "title": "Recuerda",
+                "body": "No olvides consultar con tu médico, y realizar exámenes de rutina."
+            },
+        ];
+        this.noteRandom();
     }
     /****************************CARGAR ENCUESTA***************************/
+    ApplySurveyPage.prototype.noteRandom = function () {
+        var num = this.notes.length;
+        var random = Math.floor(Math.random() * num);
+        this.note = this.notes[random];
+    };
     ApplySurveyPage.prototype.loadPoll = function () {
         var _this = this;
         this.pollProvider.getPool(this.survey.id)
@@ -60,6 +84,8 @@ var ApplySurveyPage = /** @class */ (function () {
             });
             loading.present();
             _this.survey = data;
+            //this.survey.questions.splice(3, 0);
+            delete _this.survey.questions[3];
             _this.currQuestion = _this.survey.questions[0];
             _this.step = 0;
             _this.totalQuestions = _this.survey.questions.length;
@@ -70,6 +96,7 @@ var ApplySurveyPage = /** @class */ (function () {
     /*************************FIN CARGAR ENCUESTA***************************/
     /**************NAVEGAR ENTRE PREGUNTAS*************/
     ApplySurveyPage.prototype.navigateQuestion = function (step) {
+        this.noteRandom();
         if (this.step + step < 0) {
             return;
         }
@@ -77,10 +104,18 @@ var ApplySurveyPage = /** @class */ (function () {
             return;
         }
         this.step += step;
+        if (this.step == 3) {
+            if (step == 1) {
+                this.step += 1;
+            }
+            else if (step == -1) {
+                this.step -= 1;
+            }
+        }
         this.currQuestion = this.survey.questions[this.step];
     };
     ApplySurveyPage.prototype.checksFullfilled = function () {
-        if (Object.keys(this.answers).length == this.totalQuestions) {
+        if (Object.keys(this.answers).length == this.totalQuestions - 1) {
             this.surveyFilled = 1;
         }
     };
@@ -93,37 +128,39 @@ var ApplySurveyPage = /** @class */ (function () {
         console.log(this.answers);
         var id = localStorage.getItem("idU");
         var json = {
+            "number_attemps": 0,
             "user_id": id,
             "poll_id": this.survey.id
         };
         this.providerResult.saveApplyPoll(json)
             .subscribe(function (data) {
             if (data) {
-                _this.loadAnswers(data.id);
+                _this.loadAnswers(data);
             }
         }, function (error) { console.log(error); });
     };
-    ApplySurveyPage.prototype.loadAnswers = function (id) {
+    ApplySurveyPage.prototype.loadAnswers = function (data) {
         var _this = this;
         var arr = [];
         this.survey.questions.forEach(function (item) {
             arr.push({
-                "answer": answers[item.id],
+                "answer": _this.answers[item.id],
                 "poll_id": _this.survey.id,
                 "question_id": item.id,
-                "apply_survey_id": id
+                "apply_survey_id": data.id
             });
         });
         this.sendAnswers(arr);
     };
     ApplySurveyPage.prototype.sendAnswers = function (arr) {
         var _this = this;
-        arr.forEach(function (element) {
-            _this.providerResult.saveAnswersPoll(json)
+        arr.forEach(function (item) {
+            _this.providerResult.saveAnswersPoll(item)
                 .subscribe(function (data) {
                 if (data) {
                     _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_6__pages_report_poll_report_poll__["a" /* ReportPollPage */], {
                         type: _this.survey.type_poll,
+                        result: data
                     });
                 }
             }, function (error) { console.log(error); });
@@ -131,7 +168,7 @@ var ApplySurveyPage = /** @class */ (function () {
     };
     ApplySurveyPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-apply-survey',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/'<!--\n\n  Generated template for the ModalTestPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title></ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content *ngIf="Available" padding>\n\n    <button ion-button small class="btndismiss" (click)="dismiss()" >X</button>\n\n    <br><br><br>\n\n    <h1>{{survey.name_poll}}</h1>\n\n    <div>\n\n      <div>\n\n        <p class="opcQ">{{step + 1}}. {{currQuestion.concept_quiestion}}</p>\n\n        <hr id="linequestion">\n\n        <ion-list radio-group [(ngModel)]="answers[currQuestion.id]">\n\n          <div *ngFor="let opc of currQuestion.options_question">\n\n            <ion-item>\n\n              <ion-label>{{opc.description_opction}}</ion-label>\n\n              <ion-radio  value="{{opc.id}}" (ionSelect)="checksFullfilled()"></ion-radio> \n\n            </ion-item>\n\n          </div>\n\n        </ion-list>\n\n      </div>\n\n    </div>\n\n      <button ion-button round small class="btns btnSend" *ngIf="surveyFilled" (click)="sendAnswers()">Enviar</button>\n\n    <div>\n\n    </div>  \n\n      <div id="sectionArrows" >\n\n          <h1>\n\n              <ion-icon id="hola" name="ios-arrow-dropleft-outline" (click)="navigateQuestion(-1)"></ion-icon> &nbsp;\n\n              <ion-icon id="hola" name="ios-arrow-dropright-outline" (click)="navigateQuestion(1)"></ion-icon>\n\n          </h1> \n\n      </div>    \n\n       \n\n    <div id="counter" >\n\n        <ion-chip id="chipcountuner">\n\n            <ion-label>Pregunta {{step + 1}} de {{totalQuestions}}</ion-label>\n\n        </ion-chip>\n\n    </div>   \n\n \n\n    <div id="messageQuestion">\n\n      <p id="ptext">¿Sabias que? <br> Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo.</p>\n\n    </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/,
+            selector: 'page-apply-survey',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/'<!--\n\n  Generated template for the ModalTestPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title></ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content *ngIf="Available" padding>\n\n    <button ion-button small class="btndismiss" (click)="dismiss()" >X</button>\n\n    <br><br><br>\n\n    <h1>{{survey.name_poll}}</h1>\n\n    <div>\n\n      <div>\n\n        <p class="opcQ">{{step + 1}}. {{currQuestion.concept_quiestion}}</p>\n\n        <hr id="linequestion">\n\n        <ion-list radio-group [(ngModel)]="answers[currQuestion.id]">\n\n          <div *ngFor="let opc of currQuestion.options_question">\n\n            <ion-item>\n\n              <ion-label>{{opc.description_opction}}</ion-label>\n\n              <ion-radio  value="{{opc.id}}" (ionSelect)="checksFullfilled()"></ion-radio> \n\n            </ion-item>\n\n          </div>\n\n        </ion-list>\n\n      </div>\n\n    </div>\n\n      <button ion-button round small class="btns btnSend" *ngIf="surveyFilled" (click)="sendApply()">Enviar</button>\n\n    <div>\n\n    </div>  \n\n      <div id="sectionArrows" >\n\n          <h1>\n\n              <ion-icon id="hola" name="ios-arrow-dropleft-outline" (click)="navigateQuestion(-1)"></ion-icon> &nbsp;\n\n              <ion-icon id="hola" name="ios-arrow-dropright-outline" (click)="navigateQuestion(1)"></ion-icon>\n\n          </h1> \n\n      </div>    \n\n       \n\n    <div id="counter" >\n\n        <ion-chip id="chipcountuner">\n\n            <ion-label>Pregunta {{step + 1}} de {{totalQuestions}}</ion-label>\n\n        </ion-chip>\n\n    </div>   \n\n \n\n    <div id="messageQuestion">\n\n      <p id="ptext">{{note.title}} <br> {{note.body}}</p>\n\n    </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/,
         }),
         __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__providers_polls_polls__["a" /* PollsProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_polls_polls__["a" /* PollsProvider */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_5__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */]) === "function" && _g || Object])
     ], ApplySurveyPage);
@@ -250,7 +287,7 @@ var CommentForumPage = /** @class */ (function () {
     };
     CommentForumPage.prototype.loadUsers = function () {
         var _this = this;
-        this.providerUser.getUsers(this.forum["id"])
+        this.providerUser.getUsers()
             .subscribe(function (data) {
             _this.users = data;
         }, function (error) { console.log(error); });
@@ -903,29 +940,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ResultSurveysProvider = /** @class */ (function () {
     function ResultSurveysProvider(http) {
         this.http = http;
-        this.baseUrl = "https://preve-ya.herokuapp.com";
+        this.baseUrl = "http://localhost:3000";
     }
-    ResultSurveysProvider.prototype.saveApplyPoll = function () {
+    ResultSurveysProvider.prototype.saveApplyPoll = function (json) {
         var jwt = localStorage.getItem("jwt");
         var headers = new __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["c" /* HttpHeaders */]({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwt
         });
+        var optionsGet = { headers: headers };
         var options = { headers: headers };
         return this.http.post(this.baseUrl + '/apply_surveys', json, options);
     };
-    ResultSurveysProvider.prototype.saveAnswersPoll = function () {
+    ResultSurveysProvider.prototype.saveAnswersPoll = function (json) {
         var jwt = localStorage.getItem("jwt");
         var headers = new __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["c" /* HttpHeaders */]({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwt
         });
+        var optionsGet = { headers: headers };
         var options = { headers: headers };
         return this.http.post(this.baseUrl + '/result_surveys', json, options);
     };
     ResultSurveysProvider = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_common_http__["a" /* HttpClient */]) === "function" && _a || Object])
     ], ResultSurveysProvider);
     return ResultSurveysProvider;
+    var _a;
 }());
 
 //# sourceMappingURL=result-surveys.js.map

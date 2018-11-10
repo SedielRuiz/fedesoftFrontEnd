@@ -31,7 +31,7 @@
         </ion-list>
       </div>
     </div>
-      <button ion-button round small class="btns btnSend" *ngIf="surveyFilled" (click)="sendAnswers()">Enviar</button>
+      <button ion-button round small class="btns btnSend" *ngIf="surveyFilled" (click)="sendApply()">Enviar</button>
     <div>
     </div>  
       <div id="sectionArrows" >
@@ -48,6 +48,6 @@
     </div>   
  
     <div id="messageQuestion">
-      <p id="ptext">¿Sabias que? <br> Varios estudios han probado que el esperma puede vivir en la mucosa cervical antes de fertilizar el óvulo.</p>
+      <p id="ptext">{{note.title}} <br> {{note.body}}</p>
     </div>
 </ion-content>

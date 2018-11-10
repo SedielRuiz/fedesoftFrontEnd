@@ -13,25 +13,29 @@ import { HttpHeaders } from '@angular/common/http';
 */
 @Injectable()
 export class ResultSurveysProvider {
-  baseUrl:string="https://preve-ya.herokuapp.com";
+  baseUrl:string="http://localhost:3000";
   constructor(public http: HttpClient) {
     
   }
-  saveApplyPoll(){
+  saveApplyPoll(json){
     let jwt=localStorage.getItem("jwt");
     let headers = new HttpHeaders(
     {
-       'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization':'Bearer '+jwt
     });
+    const optionsGet = { headers: headers };
     const options = { headers: headers };
     return this.http.post(this.baseUrl+'/apply_surveys',json, options);
   }
-  saveAnswersPoll(){
+  saveAnswersPoll(json){
     let jwt=localStorage.getItem("jwt");
     let headers = new HttpHeaders(
     {
-       'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization':'Bearer '+jwt
     });
+    const optionsGet = { headers: headers };
     const options = { headers: headers };
     return this.http.post(this.baseUrl+'/result_surveys',json, options);
   }

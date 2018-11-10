@@ -47,7 +47,7 @@ export class CommentForumPage {
     );
   }
   loadUsers(){
-    this.providerUser.getUsers(this.forum["id"])
+    this.providerUser.getUsers()
     .subscribe(
       (data)=>{
         this.users = data;
