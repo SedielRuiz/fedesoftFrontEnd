@@ -9,10 +9,49 @@
   <ion-navbar>
     <ion-title></ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
 <ion-content padding>
-
+  <h1>Reporte</h1>
+  <p *ngIf="type==1">Hola {{user}}, <br>
+    
+  </p>
+  <ion-card id="bar" style="display:none;">
+    <ion-card-header>
+      Barras
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #barCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+  <ion-card id="cake" style="display:none;">
+    <ion-card-header>
+      Torta
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #doughnutCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+  
+  <ion-card id="line" style="display:none;">
+    <ion-card-header>
+      Lineal
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #lineCanvas></canvas>
+    </ion-card-content>
+  </ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-4>
+        <button ion-button round small class="btns" (click)="changeGaph(1)">Barras</button>
+      </ion-col>
+      <ion-col col-4>
+        <button ion-button round small class="btns" (click)="changeGaph(2)">Torta</button>
+      </ion-col>
+      <ion-col col-4>
+        <button ion-button round small class="btns" (click)="changeGaph(3)">Lineal</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

@@ -19,7 +19,13 @@ import { AlertController, LoadingController } from 'ionic-angular';
 export class LoginPage {
   userName:any;
   password:any;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:ProviderUsersProvider, public alertCtrl: AlertController, public loadingCtrl: LoadingController) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public provider:ProviderUsersProvider, 
+    public alertCtrl: AlertController, 
+    public loadingCtrl: LoadingController
+  ) {
     this.password="";
     this.userName="";
   }

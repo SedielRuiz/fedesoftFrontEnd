@@ -14,8 +14,24 @@ import { HttpHeaders } from '@angular/common/http';
 @Injectable()
 export class RatingsProvider {
   baseUrl:string="https://preve-ya.herokuapp.com";
-  constructor(public http: HttpClient) {
-    console.log('Hello RatingsProvider Provider');
+  constructor(public http: HttpClient) {}
+  getRatings(){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json',
+       'Authorization':'Bearer '+jwt
+    });
+    const options = { headers: headers };
+    return this.http.get(this.baseUrl+'/ratings',options);
   }
-
+  postRating(json){
+    let jwt=localStorage.getItem("jwt");
+    let headers = new HttpHeaders(
+    {
+       'Content-Type': 'application/json'
+    });
+    const options = { headers: headers };
+    return this.http.post(this.baseUrl+'/ratings',json, options);
+  }
 }

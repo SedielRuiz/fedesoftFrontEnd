@@ -21,7 +21,13 @@ export class CommentForumPage {
   comments:any
   commit:any
   users:any
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:CommentsForumsProvider, public providerUser:ProviderUsersProvider, public loadingCtrl: LoadingController) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public provider:CommentsForumsProvider, 
+    public providerUser:ProviderUsersProvider, 
+    public loadingCtrl: LoadingController
+  ) {
     this.forum = navParams.get("forum");
     this.comments=[]
     this.commit="";

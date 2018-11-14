@@ -10,12 +10,67 @@
   	<button ion-button menuToggle class="burguer">
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Calificacion</ion-title>
+    <ion-title></ion-title>
   </ion-navbar>
 
 </ion-header>
 
-
 <ion-content padding>
-
+  <h1>Califícanos</h1>
+  <div id="learning" class="qualifyDiv container">
+    <div class="boxes">
+      <h5>Tu calificación es importante</h5>
+      <figure>
+        <figcaption class="ratings">
+            <p style="font-size: 22px;" title="Calificación">
+                <span>
+                  <ion-icon class="iconR" name="md-star-outline" item-start title="1 Aplauso" (click)="cal(1)" id="one"> </ion-icon>
+                </span>
+                <span>
+                  <ion-icon class="iconR" name="md-star-outline" item-start title="2 Aplausos" (click)="cal(2)" id="two"></ion-icon>
+                </span>
+                <span>
+                  <ion-icon class="iconR" name="md-star-outline" item-start title="3 Aplausos" (click)="cal(3)" id="three"></ion-icon>
+                </span>
+                <span>
+                  <ion-icon class="iconR" name="md-star-outline" item-start title="4 Aplausos" (click)="cal(4)" id="four"></ion-icon>
+                </span>
+                <span>
+                  <ion-icon class="iconR" name="md-star-outline" item-start title="5 Aplausos" (click)="cal(5)" id="five"></ion-icon>
+                </span>
+            </p>
+        </figcaption>
+      </figure>
+      <ion-item class="qualify">
+          <ion-icon class="commit" name="ios-create" item-start></ion-icon>
+          <ion-label floating>Observaciones</ion-label>
+          <ion-textarea [(ngModel)]="observation" id="observation" name="observation"></ion-textarea>
+      </ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-5></ion-col>
+          <ion-col col-7>
+            <button ion-button type="button" class="btns btnObservation" (click)="saveRating()">Calificar</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+  <ion-item class="contentOb" >
+    <div *ngFor="let r of ratings">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-1>
+            <ion-icon class="iconObservation" name="md-person"></ion-icon>
+          </ion-col>
+          <ion-col col-11>  
+            <div *ngFor="let u of users">
+              <p *ngIf="u.id == r.user_id"class="observationU">{{u.user_name}}</p>
+            </div>
+            <p class="observation"><ion-icon name="paper-plane"></ion-icon> {{r.observation_rating}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </ion-item>
 </ion-content>

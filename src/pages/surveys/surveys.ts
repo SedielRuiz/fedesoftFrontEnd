@@ -17,7 +17,11 @@ import { ApplySurveysProvider } from '../../providers/apply-surveys/apply-survey
 })
 export class SurveysPage {
   surveys:any
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:ApplySurveysProvider) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public provider:ApplySurveysProvider
+  ) {
     this.loadSurveys()
   }
   loadSurveys(){

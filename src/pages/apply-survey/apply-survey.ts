@@ -29,6 +29,7 @@ export class ApplySurveyPage {
   numQ:number
   note: any
   notes: any
+  arrResult: any
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -133,6 +134,7 @@ export class ApplySurveyPage {
     .subscribe(
       (data)=>{
         if(data){
+          this.arrResult.push(data)
           this.loadAnswers(data)
         }
       },
@@ -156,10 +158,11 @@ export class ApplySurveyPage {
       this.providerResult.saveAnswersPoll(item)
       .subscribe(
         (data)=>{
-          if(data){
+          this.arrResult.push(data);
+          if(this.arrResult.length>0){
             this.navCtrl.setRoot(ReportPollPage, {
               type: this.survey.type_poll,
-              result: data 
+              result: this.arrResult 
             });
           }
         },
@@ -168,4 +171,64 @@ export class ApplySurveyPage {
     });
   }
   /********************FIN GUARDAR ENCUESTA********************/
+  prueba(){
+    let ayy = []
+    ayy.push({
+        "id": 2,
+        "number_attemps": 0,
+        "user_id": 29,
+        "poll_id": 1,
+        "created_at": "2018-11-14T01:02:03.949Z",
+        "updated_at": "2018-11-14T01:02:03.949Z"
+    })
+    ayy.push({
+          "id": 1,
+          "question_id": 1,
+          "created_at": "2018-11-14T01:02:04.396Z",
+          "updated_at": "2018-11-14T01:02:04.396Z",
+          "apply_survey_id": 2,
+          "poll_id": 1,
+          "answer": 1
+      },
+      {
+          "id": 2,
+          "question_id": 3,
+          "created_at": "2018-11-14T01:02:04.511Z",
+          "updated_at": "2018-11-14T01:02:04.511Z",
+          "apply_survey_id": 2,
+          "poll_id": 1,
+          "answer": 5
+      },
+      {
+          "id": 3,
+          "question_id": 5,
+          "created_at": "2018-11-14T01:02:04.555Z",
+          "updated_at": "2018-11-14T01:02:04.555Z",
+          "apply_survey_id": 2,
+          "poll_id": 1,
+          "answer": 11
+      },
+      {
+          "id": 4,
+          "question_id": 6,
+          "created_at": "2018-11-14T01:02:04.592Z",
+          "updated_at": "2018-11-14T01:02:04.592Z",
+          "apply_survey_id": 2,
+          "poll_id": 1,
+          "answer": 14
+      },
+      {
+          "id": 5,
+          "question_id": 2,
+          "created_at": "2018-11-14T01:02:04.709Z",
+          "updated_at": "2018-11-14T01:02:04.709Z",
+          "apply_survey_id": 2,
+          "poll_id": 1,
+          "answer": 4
+      })
+    this.navCtrl.setRoot(ReportPollPage, {
+      type: 1,
+      result:ayy
+    });
+  }
 }

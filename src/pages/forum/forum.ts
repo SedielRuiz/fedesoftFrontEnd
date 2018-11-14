@@ -17,7 +17,11 @@ import { CommentForumPage } from '../comment-forum/comment-forum';
 })
 export class ForumPage {
   forums:any
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:ForumsProvider) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public provider:ForumsProvider
+  ) {
     this.forums=[]
     this.loadForums()
   }

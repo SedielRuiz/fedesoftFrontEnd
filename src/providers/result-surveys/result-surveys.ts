@@ -13,7 +13,7 @@ import { HttpHeaders } from '@angular/common/http';
 */
 @Injectable()
 export class ResultSurveysProvider {
-  baseUrl:string="http://localhost:3000";
+  baseUrl:string="https://preve-ya.herokuapp.com";
   constructor(public http: HttpClient) {
     
   }

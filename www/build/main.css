@@ -26022,6 +26022,88 @@ hr {
   color: #000000;
 }
 
+.qualifyDiv {
+  display: block;
+  width: 100%;
+  margin: 0px;
+  float: center;
+  important: 0;
+}
+
+.boxes {
+  -webkit-box-shadow: 8px 8px 8px #aaa;
+  box-shadow: 8px 8px 8px #aaa;
+  border-radius: 12px;
+  background: #FFE5FB;
+  width: 100%;
+  margin: 0px auto;
+  padding: 8px;
+  text-align: center;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#learning {
+  display: block;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.ratings {
+  margin-top: -42px !important;
+  padding-top: 0px !important;
+}
+
+figcaption.ratings {
+  margin-top: 20px;
+}
+
+figcaption.ratings span {
+  color: #f1c40f;
+  font-size: 1.5em;
+}
+
+figcaption.ratings span:hover {
+  color: #f39c12;
+  text-decoration: none;
+}
+
+.iconObservation {
+  font-size: 28px !important;
+}
+
+.observationU {
+  color: black !important;
+  font-size: 16px !important;
+}
+
+.observation {
+  color: black !important;
+  margin-left: 30px !important;
+}
+
+.qualify {
+  background: none !important;
+  margin-top: -32px !important;
+}
+
+.btnObservation {
+  width: 74%;
+  height: 41px;
+  font-size: 15px;
+  margin-left: 52px;
+}
+
+.contentOb {
+  background: none !important;
+}
+
 .btnSave {
   text-align: center;
 }
@@ -26034,6 +26116,14 @@ hr {
 
 .iconR {
   margin-top: 32px !important;
+}
+
+.ios page-home .scroll-content, .md page-home .scroll-content {
+  background-color: #f4f4f4;
+}
+
+.ios page-home ion-card-header, .md page-home ion-card-header {
+  font-weight: bold;
 }
 
 .risksDiv {

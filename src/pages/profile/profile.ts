@@ -23,17 +23,21 @@ export class ProfilePage {
   lastName:string;
   phone:number;
   address:any;
-  email:any;
   userName:any;
   neighborhoodId:any;
   neighborhoods:any;
-  constructor(public navCtrl: NavController, public navParams: NavParams,  public provider:ProviderUsersProvider, public alertCtrl: AlertController, public providerNeig:NeighborhoodsProvider) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,  
+    public provider:ProviderUsersProvider, 
+    public alertCtrl: AlertController, 
+    public providerNeig:NeighborhoodsProvider
+  ) {
     this.id;
     this.name="";
     this.lastName="";
     this.phone;
     this.address="";
-    this.email="";
     this.userName="";
     this.neighborhoodId="";
     this.neighborhoods=[];
@@ -58,7 +62,6 @@ export class ProfilePage {
       "phone":this.phone,
       "address":this.address,
       "user_name":this.userName,
-      "email":this.email,
       "neighborhood_id":this.neighborhoodId
     }
     this.provider.putUser(json, this.id)
@@ -87,7 +90,6 @@ export class ProfilePage {
         this.lastName = data["last_name"];
         this.phone = data["phone"];
         this.address = data["address"];
-        this.email = data["email"];
         this.userName = data["user_name"];
         this.neighborhoodId = data["neighborhood_id"];
       },

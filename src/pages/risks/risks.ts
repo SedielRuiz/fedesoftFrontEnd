@@ -16,7 +16,11 @@ import { RisksProvider } from '../../providers/risks/risks';
 })
 export class RisksPage {
   risks:any;
-  constructor(public navCtrl: NavController, public navParams: NavParams,  public provider:RisksProvider) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,  
+    public provider:RisksProvider
+  ) {
     this.risks=[]
     this.loadRisks()
   }

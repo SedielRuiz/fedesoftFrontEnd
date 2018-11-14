@@ -33,7 +33,12 @@ export class RegisterPage {
   neighborhoodId:any;
   rlb:any;
   neighborhoods:any;
-  constructor(public navCtrl: NavController, public alertCtrl: AlertController, public providerUser:ProviderUsersProvider, public providerNeig:NeighborhoodsProvider) {
+  constructor(
+    public navCtrl: NavController, 
+    public alertCtrl: AlertController, 
+    public providerUser:ProviderUsersProvider, 
+    public providerNeig:NeighborhoodsProvider
+  ) {
     this.rlb="";
     this.person={};
     this.name="";

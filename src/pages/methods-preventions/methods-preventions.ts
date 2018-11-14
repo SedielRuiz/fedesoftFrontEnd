@@ -16,7 +16,11 @@ import { MethodsPreventionsProvider } from '../../providers/methods-preventions/
 })
 export class MethodsPreventionsPage {
   methods:any
-  constructor(public navCtrl: NavController, public navParams: NavParams, public provider:MethodsPreventionsProvider) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public provider:MethodsPreventionsProvider
+  ) {
     this.methods=[]
     this.loadMethods()
   }
