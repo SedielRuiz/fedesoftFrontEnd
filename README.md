@@ -1,4 +1,4 @@
-# Bienvenidos a Prevé ya
+# Bienvenidos a Prevé ya  <img  src="assets/imgs/LogoPreveYaBlanco.png">
 
 Prevé ya es un prototipo que será útil para todos, tanto personas jurídicas como personas naturales, capturando y ofreciendo información acerca de como preveer el embarazo en la adolescencia, como manejarlo, en que puntos se centra más y donde se debe hacer mas retroalimentación, apoyo, entre otras.<br>
 Puedes abarcar mas a fondo acerca de nosotros en: https://preve-ya-v01.herokuapp.com/ <br>
