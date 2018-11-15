@@ -67,6 +67,28 @@
             <div *ngFor="let u of users">
               <p *ngIf="u.id == r.user_id"class="observationU">{{u.user_name}}</p>
             </div>
+            <figcaption class="ratings" style="margin-left: 29px;margin-top: -33px !important;">
+                <p style="font-size: 14px;" title="Calificación">
+                    <span>
+                      <ion-icon class="iconR" name="md-star-outline" item-start title="1 Aplauso" id="one"> </ion-icon>
+                    </span>
+                    <span>
+                      <ion-icon class="iconR" name="md-star-outline" item-start title="2 Aplausos" id="two"></ion-icon>
+                    </span>
+                    <span>
+                      <ion-icon class="iconR" name="md-star-outline" item-start title="3 Aplausos" id="three"></ion-icon>
+                    </span>
+                    <span>
+                      <ion-icon class="iconR" name="md-star-outline" item-start title="4 Aplausos" id="four"></ion-icon>
+                    </span>
+                    <span>
+                      <ion-icon class="iconR" name="md-star-outline" item-start title="5 Aplausos" id="five"></ion-icon>
+                    </span>
+                    <span>
+                      {{r.qualify}}
+                    </span>
+                </p>
+            </figcaption>
             <p class="observation"><ion-icon name="paper-plane"></ion-icon> {{r.observation_rating}}</p>
           </ion-col>
         </ion-row>

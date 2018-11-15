@@ -18,49 +18,15 @@
       <ion-slide *ngFor="let slide of slides">
         <img [src]="slide.image" class="slide-image"/>
         <h2 class="slide-title" [innerHTML]="slide.title"></h2>
-        <p [innerHTML]="slide.description"></p>
+        <p [innerHTML]="slide.description"></p><a href='#' *ngIf="slide.component!=''" (click)="readMore(slide)">Leer más</a>
       </ion-slide>
     </ion-slides>
-    <!--div id="learning" class="container">
-    <div class="container">
-      <div id="div1">
-        <div class="boxes">
-          <img class="imgLearning" src="assets/imgs/riesgos.png">
-          <div>
-            <h4>riesgos</h4>
-            <p>aqui van los riesgos khzcgvejnf smcmb bdsbc, <br>  aadgkdxxhbw.cf ,jdgs...</p>
-            <a href="#">Leer más</a>
-          </div>
-        </div>
-      </div>
-      <div id="div2">
-        <div class="boxes">
-          <img class="imgLearning" src="assets/imgs/metodosa.png">
-          <div>
-            <h4>Metodos anticonveptivos</h4>
-            <p>aqui van los metodos jasdiuscbukf jdghscisnd <br> z,djgwsjnbc xjkesdnbv  j,wdgefd...</p>
-            <a href="#">Leer más</a>
-          </div>
-        </div>
-      </div>
-      <div id="div3">
-        <div class="boxes">
-            <img class="imgLearning" src="assets/imgs/metodosa.png">
-            <div>
-              <h4>Causas</h4>
-              <p>aqui van los metodos jasdiuscbukf jdghscisnd  <br>z,djgwsjnbc xjkesdnbv  j,wdgefd...</p>
-              <a href="#">Leer más</a>
-            </div>
-          </div>
-      </div>    
-    </div>
-    </div-->
     <hr>
     <ion-grid>
       <ion-row>
         <ion-col col-1></ion-col>
         <ion-col col-10>
-          <button ion-button class="btns">Test de Probabilidad</button>
+          <button ion-button class="btns" (click)="test()">Test de Probabilidad</button>
         </ion-col>
         <ion-col col-1></ion-col>
       </ion-row>

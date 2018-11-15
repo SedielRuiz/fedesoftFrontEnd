@@ -13,12 +13,26 @@
 
 <ion-content padding>
   <h1>Reporte</h1>
-  <p *ngIf="type==1">Hola {{user}}, <br>
-    
+  <p>Hola {{user}}, <br>
+  <p *ngIf="type==1">
+    De acuerdo a tus respuestas, su rango de edad esta entre {{age}}, debido a que considera que {{helpState}} recibió ayudas del estado; 
+    y {{informated}} se encuentra informado del tema en consencuencia 
+    <span *ngIf="informated=='No'">tiene un alto riesgo de un embarazo no deseado</span>
+    <span *ngIf="informated=='Si'">tiene menor probabilidad de embarazo.</span><br><br>
+
+    Otros puntos que pueden influir es la mestruación, al ser una mujer cuya mestruación {{regular}} es regular 
+    <span *ngIf="regular=='No'">puedes tener un desorden en tus periodos de fertilidad</span>
+    <span *ngIf="regular=='Si'">no hay mucho de que preocuparse ya que podrías de una forma saber cuales son tus días mas fertilez y lo que no<br>con capacidad de reducir el embarazo</span><br><br>
+
+    Por último y más importante, la mejor forma de prevenir el embarazo es el uso de preservativo<br>
+    Debido a que {{used}} usas preservativos 
+    <span *ngIf="used=='No'">posiblemente tendrás un embarazo no deseado</span>
+    <span *ngIf="used=='Si'">te felicitamos ya que tienes menos posibilidades de no tener un embarazo no deseado.</span><br><br>
+    Puedes ver tus resultados através de grafícas  si lo deseas.<br>
   </p>
   <ion-card id="bar" style="display:none;">
     <ion-card-header>
-      Barras
+      Prevención
     </ion-card-header>
     <ion-card-content>
       <canvas #barCanvas></canvas>
@@ -26,7 +40,7 @@
   </ion-card>
   <ion-card id="cake" style="display:none;">
     <ion-card-header>
-      Torta
+      Prevención
     </ion-card-header>
     <ion-card-content>
       <canvas #doughnutCanvas></canvas>
@@ -35,7 +49,7 @@
   
   <ion-card id="line" style="display:none;">
     <ion-card-header>
-      Lineal
+      Prevención
     </ion-card-header>
     <ion-card-content>
       <canvas #lineCanvas></canvas>

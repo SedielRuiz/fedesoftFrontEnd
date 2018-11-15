@@ -31,8 +31,20 @@ export class ReportPollPage {
   results:any
   user: string
   graph: number
-  poll: any
+  questions: any
   totalUnity: number
+  /*************variables reporte**/
+  age:any
+  ageNum:number
+  helpState:any
+  helpStateNum:number
+  informated:any
+  informatedNum:number
+  regular:any
+  regularNum:number
+  used:any
+  usedNum:number
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -43,15 +55,39 @@ export class ReportPollPage {
     this.results = navParams.get("result");
     this.loadUser(this.results[0]['user_id']);
     this.loadPoll(this.results[0]['poll_id']);
-    console.log(this.results)
+  }
+  loadReport(){
+      for (let r = 0; r < this.results.length; ++r) {
+        for (let x = 0; x < this.questions.length; ++x) {
+          if(this.results[r].question_id == this.questions[x].id) {
+            let variable="";
+            switch(this.results[r].question_id){
+              case 1: variable = "informated"; break;
+              case 2: variable = "helpState"; break;
+              case 3: variable = "age"; break;
+              case 5: variable = "regular"; break;
+              case 6: variable = "used"; break;
+            }
+            this.defineText(this.questions[x].options_question, this.results[r].answer, variable);
+          }
+        }
+      }
+  }
+  defineText(arrOpc: any, answer:any, variable: string){
+    for (let opc = 0; opc < arrOpc.length; ++opc) {
+      if (arrOpc[opc].id==answer) {
+        this[variable] = arrOpc[opc].description_opction;
+      }
+    }
   }
   loadPoll(id){
     this.pollProvider.getPool(id)
     .subscribe(
       (data) => {    
-        this.poll = data;
-        let totalQuestions = this.poll.questions.length; 
+        this.questions = data.questions;
+        let totalQuestions = this.questions.length;
         this.totalUnity = 100/totalQuestions;
+        this.loadReport();
       }
     )
   }
@@ -64,7 +100,15 @@ export class ReportPollPage {
       (error)=>{console.log(error);}
     );
   }
+  loadNumbersParam(){
+    if(this.age < 3) {this.ageNum=80;}else{this.ageNum=20;}
+    if(this.helpState == "No"){this.helpStateNum=30;}else{this.helpStateNum=70;}
+    if(this.informated == "No"){this.informatedNum=10;}else{this.informatedNum=90;}
+    if(this.used == "No"){this.usedNum=20;}else{this.usedNum=100;}
+    if(this.regular == "No"){this.regularNum=50;}else{this.regularNum=60;}
+  }
   changeGaph(graph:number){
+    this.loadNumbersParam();
     switch(graph){
       case 1:
         this.bars();
@@ -82,10 +126,10 @@ export class ReportPollPage {
     this.barChart = new Chart(this.barCanvas.nativeElement, {
       type: 'bar',
       data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: ["Edad", "Estado", "Información", "Preservativo", "Regular"],
         datasets: [{
           label: 'Prevención',
-          data: [12, 19, 50, 5, 2, 3],
+          data: [this.ageNum, this.helpStateNum, this.informatedNum, this.usedNum, this.regularNum],
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
                   'rgba(54, 162, 235, 0.2)',
@@ -125,10 +169,10 @@ export class ReportPollPage {
       
       type: 'doughnut',
       data: {
-          labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+          labels: ["Edad", "Estado", "Información", "Preservativo", "Regular"],
           datasets: [{
             label: 'Prevención',
-              data: [12, 19, 3, 5, 2, 3],
+              data: [this.ageNum, this.helpStateNum, this.informatedNum, this.usedNum, this.regularNum],
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                   'rgba(54, 162, 235, 0.2)',
@@ -158,7 +202,7 @@ export class ReportPollPage {
 
       type: 'line',
       data: {
-          labels: ["January", "February", "March", "April", "May", "June", "July"],
+          labels: ["Edad", "Estado", "Información", "Preservativo", "Regular"],
           datasets: [
               {
                   label: "Prevención",
@@ -179,7 +223,7 @@ export class ReportPollPage {
                   pointHoverBorderWidth: 2,
                   pointRadius: 1,
                   pointHitRadius: 10,
-                  data: [65, 59, 80, 81, 56, 55, 40],
+                  data: [this.ageNum, this.helpStateNum, this.informatedNum, this.usedNum, this.regularNum],
                   spanGaps: false,
               }
           ]
