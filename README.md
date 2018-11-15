@@ -19,6 +19,8 @@ Nuestras apis listas para consumir en: https://preve-ya.herokuapp.com/
 <ul>
   <li>Foros: donde podrás interactuar con profesionales y opinar acerca de cualquier duda posible.</li>
   <li>Información: por medio de grafias y reportes acerda de la situación actual acerca del tema tanto para jovenes como entidades.</li>
+  <li>Metodos anticonceptivos: algunos metodos que pueden servirte con la emjor asesoría profesional.</li>
+  <li>Riesgos: que pueden aparecer antes y despues de tomar una decisión al respecto en este tema.</li>
 </ul>
 
 Debido a que somos una comunidad Open Source adiconalmente podemos encontrar nuestras apis: https://github.com/TalentoBogotaFedesoft/unitec-173-preve-ya-api.git
