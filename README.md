@@ -14,5 +14,11 @@ Nuestras apis listas para consumir en: https://preve-ya.herokuapp.com/
   
 # Servicios
   <p>Brindar y capturar información de todos los barrios de la localidad acerca de casos de embarazo en la adolescencia y causas de este para así dar medidas de manejo y precaución para disminuir riesgos tanto de embarazo como en el mismo</p>
-  
-  Debido a que somos una comunidad Open Source adiconalmente podemos encontrar nuestras apis: https://github.com/TalentoBogotaFedesoft/unitec-173-preve-ya-api.git
+
+<h3>Prevé Ya es la mejor experiencia de aprendzaje y emprendimiento a la prevención acerca del embarazo en la adolesencia con una variedad de:</h3>
+<ul>
+  <li>Foros: donde podrás interactuar con profesionales y opinar acerca de cualquier duda posible.</li>
+  <li>Información: por medio de grafias y reportes acerda de la situación actual acerca del tema tanto para jovenes como entidades.</li>
+</ul>
+
+Debido a que somos una comunidad Open Source adiconalmente podemos encontrar nuestras apis: https://github.com/TalentoBogotaFedesoft/unitec-173-preve-ya-api.git
