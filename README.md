@@ -7,7 +7,7 @@ Puedes abarcar mas a fondo acerca de nosotros en: https://preve-ya-v01.herokuapp
 Nuestras apis listas para consumir en: https://preve-ya.herokuapp.com/
 
 <h2>Localidad</h2>
-  <p>Antoni nariño<br>
+  <p>Antonio Nariño<br>
     nota:esta api esta diseñada para adquirir mas d euna localidad cada uno con sus barrios en especifico</p>
   
 # Reto
