@@ -25,4 +25,4 @@ Nuestras apis listas para consumir en: https://preve-ya.herokuapp.com/
 
 Debido a que somos una comunidad Open Source adiconalmente podemos encontrar nuestras apis: https://github.com/TalentoBogotaFedesoft/unitec-173-preve-ya-api.git
 
-BY: Sediel Ruiz Perez
+By: Sediel Ruiz Perez
