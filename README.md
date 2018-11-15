@@ -1,5 +1,5 @@
 # Bienvenidos a Prevé ya            
-![alt text](https://github.com/TalentoBogotaFedesoft/unitec-173-preve-ya-mobile/blob/master/src/assets/imgs/LogoPreveYa.png)
+![alt text](https://github.com/TalentoBogotaFedesoft/unitec-173-preve-ya-mobile/blob/master/src/assets/imgs/LogoPreveYa.png)<br>
 Descarga nuestro DEMO en un apk y comienza a aprender: https://
 
 Prevé ya es un prototipo que será útil para todos, tanto personas jurídicas como personas naturales, capturando y ofreciendo información acerca de como preveer el embarazo en la adolescencia, como manejarlo, en que puntos se centra más y donde se debe hacer mas retroalimentación, apoyo, entre otras.<br>
