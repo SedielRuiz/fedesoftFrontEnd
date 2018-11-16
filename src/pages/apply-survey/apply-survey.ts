@@ -42,7 +42,8 @@ export class ApplySurveyPage {
     this.Available=0;
     this.surveyFilled = 0;
     this.survey = navParams.get("survey");    
-    this.answers={};    
+    this.answers={}; 
+    this.arrResult=[];  
     this.loadPoll();
     this.notes = [
       {

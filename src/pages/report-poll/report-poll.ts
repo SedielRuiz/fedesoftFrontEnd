@@ -54,7 +54,7 @@ export class ReportPollPage {
     this.type = navParams.get("type");
     this.results = navParams.get("result");
     this.loadUser(this.results[0]['user_id']);
-    this.loadPoll(this.results[0]['poll_id']);
+    this.loadPoll(this.results[0]['poll_id'], "questions");
   }
   loadReport(){
       for (let r = 0; r < this.results.length; ++r) {
@@ -80,11 +80,11 @@ export class ReportPollPage {
       }
     }
   }
-  loadPoll(id){
+  loadPoll(id, pos){
     this.pollProvider.getPool(id)
     .subscribe(
-      (data) => {    
-        this.questions = data.questions;
+      (data) => {   
+        this.questions = data[pos];
         let totalQuestions = this.questions.length;
         this.totalUnity = 100/totalQuestions;
         this.loadReport();
