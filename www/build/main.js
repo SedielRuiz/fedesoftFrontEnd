@@ -230,10 +230,15 @@ var ApplySurveyPage = /** @class */ (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
             selector: 'page-apply-survey',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/'<!--\n\n  Generated template for the ModalTestPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title></ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content *ngIf="Available" padding>\n\n    <button ion-button small class="btndismiss" (click)="dismiss()" >X</button>\n\n    <br><br><br>\n\n    <h1>{{survey.name_poll}}</h1>\n\n    <div>\n\n      <div>\n\n        <p class="opcQ">{{step + 1}}. {{currQuestion.concept_quiestion}}</p>\n\n        <hr id="linequestion">\n\n        <ion-list radio-group [(ngModel)]="answers[currQuestion.id]">\n\n          <div *ngFor="let opc of currQuestion.options_question">\n\n            <ion-item>\n\n              <ion-label>{{opc.description_opction}}</ion-label>\n\n              <ion-radio  value="{{opc.id}}" (ionSelect)="checksFullfilled()"></ion-radio> \n\n            </ion-item>\n\n          </div>\n\n        </ion-list>\n\n      </div>\n\n    </div>\n\n      <button ion-button round small class="btns btnSend" *ngIf="surveyFilled" (click)="sendApply()">Enviar</button>\n\n    <div>\n\n    </div>  \n\n      <div id="sectionArrows" >\n\n          <h1>\n\n              <ion-icon id="hola" name="ios-arrow-dropleft-outline" (click)="navigateQuestion(-1)"></ion-icon> &nbsp;\n\n              <ion-icon id="hola" name="ios-arrow-dropright-outline" (click)="navigateQuestion(1)"></ion-icon>\n\n          </h1> \n\n      </div>    \n\n       \n\n    <div id="counter" >\n\n        <ion-chip id="chipcountuner">\n\n            <ion-label>Pregunta {{step + 1}} de {{totalQuestions}}</ion-label>\n\n        </ion-chip>\n\n    </div>  \n\n    <!--button ion-button round small class="btns btnSend"  (click)="prueba()">Prueba</button--> \n\n \n\n    <div id="messageQuestion">\n\n      <p id="ptext">{{note.title}} <br> {{note.body}}</p>\n\n    </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\apply-survey\apply-survey.html"*/,
         }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_3__providers_polls_polls__["a" /* PollsProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_polls_polls__["a" /* PollsProvider */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _f || Object, typeof (_g = typeof __WEBPACK_IMPORTED_MODULE_5__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */]) === "function" && _g || Object])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* ViewController */],
+            __WEBPACK_IMPORTED_MODULE_2__providers_apply_surveys_apply_surveys__["a" /* ApplySurveysProvider */],
+            __WEBPACK_IMPORTED_MODULE_3__providers_polls_polls__["a" /* PollsProvider */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */],
+            __WEBPACK_IMPORTED_MODULE_5__providers_result_surveys_result_surveys__["a" /* ResultSurveysProvider */]])
     ], ApplySurveyPage);
     return ApplySurveyPage;
-    var _a, _b, _c, _d, _e, _f, _g;
 }());
 
 //# sourceMappingURL=apply-survey.js.map
@@ -2616,9 +2621,20 @@ var LoginPage = /** @class */ (function () {
             loading.present();
             setTimeout(function () {
                 loading.dismiss();
-                localStorage.setItem('user', JSON.stringify(dataUser["name"]));
-                localStorage.setItem('idU', JSON.stringify(dataUser["id"]));
-                _this.showInside(dataUser["name"]);
+                var name = "";
+                var id = "";
+                if (dataUser == undefined) {
+                    name = "...";
+                    id = "0";
+                }
+                else {
+                    name = dataUser["name"];
+                    id = dataUser["id"];
+                }
+                console.log(dataUser);
+                localStorage.setItem('user', JSON.stringify(name));
+                localStorage.setItem('idU', JSON.stringify(id));
+                _this.showInside(name);
                 _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_3__pages_principal_principal__["a" /* PrincipalPage */]);
             }, 2000);
         }, function (error) { console.log(error); _this.showError(error); });
@@ -2642,15 +2658,12 @@ var LoginPage = /** @class */ (function () {
     };
     LoginPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-login',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\login\login.html"*/'<!--\n\n  Generated template for the LoginPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar style="background:#fff !important;">\n\n    <ion-title></ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n  <ion-content padding class="grid-basic-page containerLog">\n\n  <img class="imgLogo" src="assets/imgs/LogoPreveYaBlanco.png">\n\n    <form id="formLogin">\n\n      <ion-item class="boxs">\n\n          <ion-icon class="iconL" name="md-person" item-start></ion-icon>\n\n          <ion-label class="lblL" floating>Usuario</ion-label>\n\n          <ion-input class="inpL" type="text" [(ngModel)]="userName" id="userName" name="userName"></ion-input>\n\n      </ion-item>\n\n      <ion-item class="boxs">\n\n        <ion-icon class="iconL" name="ios-lock" item-start></ion-icon>\n\n        <ion-label class="lblL" floating>Contraseña</ion-label>\n\n        <ion-input class="inpL" type="password" [(ngModel)]="password" id="password" name="password"></ion-input>\n\n      </ion-item>\n\n    </form>\n\n    <ion-grid>\n\n      <ion-row>\n\n        <ion-col col-1></ion-col>\n\n        <ion-col col-10>\n\n          <button ion-button class="btnLogin" round (click)="singIn()">Entrar</button>\n\n          <button ion-button class="btnLogin" round (click)="singUp()">Registrarse</button>\n\n        </ion-col>\n\n        <ion-col col-1></ion-col>\n\n      </ion-row>\n\n    </ion-grid>\n\n  </ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\login\login.html"*/,
+            selector: 'page-login',template:/*ion-inline-start:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\login\login.html"*/'<!--\n\n  Generated template for the LoginPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar style="background:#fff !important;">\n\n    <ion-title></ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n  <ion-content padding class="grid-basic-page containerLog">\n\n  <img class="imgLogo" src="assets/imgs/LogoPreveYaBlanco.png">\n\n    <form id="formLogin">\n\n      <ion-item class="boxs">\n\n          <ion-icon class="iconL" name="md-person" item-start></ion-icon>\n\n          <ion-label class="lblL" floating>Correo electrónico</ion-label>\n\n          <ion-input class="inpL" type="text" [(ngModel)]="userName" id="userName" name="userName"></ion-input>\n\n      </ion-item>\n\n      <ion-item class="boxs">\n\n        <ion-icon class="iconL" name="ios-lock" item-start></ion-icon>\n\n        <ion-label class="lblL" floating>Contraseña</ion-label>\n\n        <ion-input class="inpL" type="password" [(ngModel)]="password" id="password" name="password"></ion-input>\n\n      </ion-item>\n\n    </form>\n\n    <ion-grid>\n\n      <ion-row>\n\n        <ion-col col-1></ion-col>\n\n        <ion-col col-10>\n\n          <button ion-button class="btnLogin" round (click)="singIn()">Entrar</button>\n\n          <button ion-button class="btnLogin" round (click)="singUp()">Registrarse</button>\n\n        </ion-col>\n\n        <ion-col col-1></ion-col>\n\n      </ion-row>\n\n    </ion-grid>\n\n  </ion-content>\n\n'/*ion-inline-end:"C:\Users\Administrador\Desktop\Proyecto fullstack\fedesoftFrontEnd\src\pages\login\login.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_2__providers_provider_users_provider_users__["a" /* ProviderUsersProvider */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__providers_provider_users_provider_users__["a" /* ProviderUsersProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_provider_users_provider_users__["a" /* ProviderUsersProvider */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */]) === "function" && _e || Object])
     ], LoginPage);
     return LoginPage;
+    var _a, _b, _c, _d, _e;
 }());
 
 //# sourceMappingURL=login.js.map

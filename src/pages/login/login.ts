@@ -70,9 +70,15 @@ export class LoginPage {
         loading.present();
         setTimeout(() => {
           loading.dismiss();
-          localStorage.setItem('user', JSON.stringify(dataUser["name"]));
-          localStorage.setItem('idU', JSON.stringify(dataUser["id"]));
-          this.showInside(dataUser["name"]);
+          let name="";
+          let id="";
+          if (dataUser==undefined) {
+            name="...";id="0";
+          }else{name=dataUser["name"];id=dataUser["id"];}
+          console.log(dataUser);
+          localStorage.setItem('user', JSON.stringify(name));
+          localStorage.setItem('idU', JSON.stringify(id));
+          this.showInside(name);
           this.navCtrl.setRoot(PrincipalPage);
         }, 2000);
 
@@ -80,7 +86,7 @@ export class LoginPage {
       (error)=>{console.log(error);this.showError(error)}
     );
   }
-  showInside(name): any {
+  showInside(name) {
     this.alertCtrl.create({
         title: "Bienvenido "+ name,
         subTitle: "Estás en prevé ya!\n",
